@@ -1,10 +1,10 @@
 swipe:
   3:
     left:
-      command: "xdotool key --delay 150 ctrl+alt+Down" # Switch to next workspace
+      command: "xdotool key --delay 150 ctrl+alt+Left" # Switch to Left workspace
     right:
-      command: "xdotool key --delay 150 ctrl+alt+Up" # Switch to previous workspace
+      command: "xdotool key --delay 150 ctrl+alt+Right" # Switch to Right workspace
     up:
-      command: "xdotool key --delay 150 ctrl+alt+Down" # Switch to next workspace
+      command: "xdotool key --delay 150 ctrl+alt+Down" # Switch to Below workspace
     down:
-      command: "xdotool key --delay 150 ctrl+alt+Up" # Switch to previous workspace
+      command: "xdotool key --delay 150 ctrl+alt+Up" # Switch to Upper workspace
