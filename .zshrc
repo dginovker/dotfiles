@@ -120,7 +120,7 @@ gpa () {
 # Usage:
 # gpcs Rename all banana => apples
 gpcs () {
-  git add "**/*.cs"
+  git add "**/*.cs" "**/*.java"
   git commit -m "$*"
   git push
 }
@@ -132,7 +132,7 @@ gs () {
 
 # Show all changes in .cs files (useful before gpcs)
 gdcs () {
-  git diff -w "**/*.cs"
+  git diff -w "**/*.cs" "**/*.java"
 }
 
 # Show all committed changes (lazy typing)
