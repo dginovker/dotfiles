@@ -150,8 +150,11 @@ export GOOGLE_APPLICATION_CREDENTIALS="/Users/dginovker/.config/MyConfigs/google
 
 export PATH="$PATH:/Users/dginovker/.yarn/bin"
 
-eval "$(pyenv init --path)"
-eval "$(pyenv init -)"
+if command -v pyenv &> /dev/null
+then
+  eval "$(pyenv init --path)"
+  eval "$(pyenv init -)"
+fi
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/dginovker/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/dginovker/google-cloud-sdk/path.zsh.inc'; fi
