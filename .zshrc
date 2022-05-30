@@ -106,7 +106,7 @@ export LANG=en_US.UTF-8
 
 alias pb=pbpaste
 
-unalias gcp
+unalias gcp 2>/dev/null
 gcp () {
   git commit -m "$*"
   git push
