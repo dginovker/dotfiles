@@ -1,4 +1,4 @@
-source ~/Projects/dotfiles/commands/*
+for f in ~/Projects/dotfiles/commands/*; do source $f; done
 
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
