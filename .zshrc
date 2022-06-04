@@ -1,10 +1,9 @@
-for f in ~/Projects/dotfiles/commands/*; do source $f; done
-
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
 [ -d "/Users/dginovker/.oh-my-zsh" ] && export ZSH="/Users/dginovker/.oh-my-zsh"
+[ -d "/home/wacket/.oh-my-zsh" ] && export ZSH="/home/wacket/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -12,6 +11,8 @@ for f in ~/Projects/dotfiles/commands/*; do source $f; done
 
 #ZSH_THEME="robbyrussell"
 if (( RANDOM % 2 )); then ZSH_THEME="af-magic" ; else ZSH_THEME="random" ; fi
+
+for f in ~/Projects/dotfiles/commands/*; do source $f; done
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -76,7 +77,7 @@ plugins=(
   zsh-autosuggestions
 )
 
-[ -d "$ZSH/oh-my-zsh.sh" ] && source $ZSH/oh-my-zsh.sh
+[ -d "$ZSH" ] && source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
@@ -161,3 +162,4 @@ if [ -f '/Users/dginovker/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/dgino
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/Users/dginovker/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/dginovker/google-cloud-sdk/completion.zsh.inc'; fi
+
