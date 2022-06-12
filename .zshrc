@@ -1,6 +1,8 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
+DISABLE_AUTO_UPDATE=true
+
 # Path to your oh-my-zsh installation.
 [ -d "/Users/dginovker/.oh-my-zsh" ] && export ZSH="/Users/dginovker/.oh-my-zsh"
 [ -d "/home/wacket/.oh-my-zsh" ] && export ZSH="/home/wacket/.oh-my-zsh"
