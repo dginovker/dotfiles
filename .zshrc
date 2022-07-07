@@ -125,7 +125,8 @@ gpa () {
 # Usage:
 # gpcs Rename all banana => apples
 gpcs () {
-  git add "**/*.cs" "**/*.java"
+  git add "**/*.cs" 2>/dev/null
+  git add "**/*.java" 2>/dev/null
   git commit -m "$*"
   git push
 }
