@@ -11,8 +11,7 @@ DISABLE_AUTO_UPDATE=true
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 
-#ZSH_THEME="robbyrussell"
-if (( RANDOM % 2 )); then ZSH_THEME="af-magic" ; else ZSH_THEME="random" ; fi
+ZSH_THEME="af-magic";
 
 for f in ~/Projects/dotfiles/commands/*; do source $f; done
 
