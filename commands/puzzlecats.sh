@@ -54,6 +54,7 @@ veryclean() {
   git clean -fd 
   git checkout development
   git pull
+  git reset --hard origin/development
   git submodule update --remote --force
   git submodule foreach git checkout .
   git submodule foreach git clean -fd
