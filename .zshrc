@@ -126,6 +126,7 @@ gpa () {
 gpcs () {
   git add "**/*.cs" 2>/dev/null
   git add "**/*.java" 2>/dev/null
+  git add "**/*.js" 2>/dev/null
   git commit -m "$*"
   git push
 }
@@ -137,7 +138,7 @@ gs () {
 
 # Show all changes in .cs files (useful before gpcs)
 gdcs () {
-  git diff -w "**/*.cs" "**/*.java"
+  git diff -w "**/*.cs" "**/*.java" "**/*.js"
 }
 
 # Show all committed changes (lazy typing)
