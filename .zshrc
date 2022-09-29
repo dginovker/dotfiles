@@ -127,6 +127,7 @@ gpcs () {
   git add "**/*.cs" 2>/dev/null
   git add "**/*.java" 2>/dev/null
   git add "**/*.js" 2>/dev/null
+  git add "**/*.kt" 2>/dev/null
   git commit -m "$*"
   git push
 }
@@ -138,7 +139,7 @@ gs () {
 
 # Show all changes in .cs files (useful before gpcs)
 gdcs () {
-  git diff -w "**/*.cs" "**/*.java" "**/*.js"
+  git diff -w "**/*.cs" "**/*.java" "**/*.js" "**/*.kt"
 }
 
 # Show all committed changes (lazy typing)
