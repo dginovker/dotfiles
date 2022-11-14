@@ -9,10 +9,10 @@ sm () {
 }
 
 bumpversion() {
-  appversionline=$(grep AppVersion Assets/Photon/PhotonUnityNetworking/Resources/PhotonServerSettings.asset)
+  appversionline=$(grep AppVersion Assets/Resources/PhotonServerSettings.asset)
   text=`echo $appversionline | sed "s/\([^0-9]*\)\([\.0-9]*\)/\1/"`
   num=`echo $appversionline | sed "s/\([^0-9]*\)\([\.0-9]*\)/\2/"` ; num=$( printf "%.1f\n" $(echo $(( num + 0.1 )) ) )
-  sed -i '' -re "s/.*    AppVersion: [\.0-9].*/$text$num/" Assets/Photon/PhotonUnityNetworking/Resources/PhotonServerSettings.asset
+  sed -i '' -re "s/.*    AppVersion: [\.0-9].*/$text$num/" Assets/Resources/PhotonServerSettings.asset
   
   bundleversionline=$(grep bundleVersion ProjectSettings/ProjectSettings.asset)
   text=`echo $bundleversionline | sed "s/\([^0-9]*\)\([\.0-9]*\)/\1/"`
@@ -24,7 +24,7 @@ bumpversion() {
   num=`echo $androidversioncode | sed "s/\([^0-9]*\)\([\.0-9]*\)/\2/"` ; num=$( printf "%.0f\n" $(echo $(( num + 1 )) ) )
   sed -i '' -re "s/.*  AndroidBundleVersionCode: [\.0-9].*/$text$num/" ProjectSettings/ProjectSettings.asset
 
-  git add Assets/Photon/PhotonUnityNetworking/Resources/PhotonServerSettings.asset ProjectSettings/ProjectSettings.asset
+  git add Assets/Resources/PhotonServerSettings.asset ProjectSettings/ProjectSettings.asset
   gdc
   echo "Press enter to commit"
   read
