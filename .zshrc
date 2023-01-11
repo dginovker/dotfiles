@@ -132,6 +132,11 @@ gpcs () {
   git push
 }
 
+# Kill all processes with a name
+hurt () {
+  ps aux | grep -ie "$*" | awk '{print $2}' | xargs kill -9 
+}
+
 # Lazy typing
 gs () {
   git status
