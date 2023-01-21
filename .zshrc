@@ -5,7 +5,7 @@ DISABLE_AUTO_UPDATE=true
 
 # Path to your oh-my-zsh installation.
 [ -d "/Users/dginovker/.oh-my-zsh" ] && export ZSH="/Users/dginovker/.oh-my-zsh"
-[ -d "/home/macket/.oh-my-zsh" ] && export ZSH="/home/macket/.oh-my-zsh"
+[ -d "/home/aacket/.oh-my-zsh" ] && export ZSH="/home/aacket/.oh-my-zsh"
 [ -d "/home/wacket/.oh-my-zsh" ] && export ZSH="/home/wacket/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
