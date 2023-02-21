@@ -62,3 +62,7 @@ veryclean() {
   git submodule foreach git pull
 }
 
+build () {
+  BRANCH="$*" ; git pull ; git checkout build ; git  reset --hard ${BRANCH} ; git push -f ; git checkout ${BRANCH}     
+}
+
