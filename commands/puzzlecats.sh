@@ -1,6 +1,6 @@
 # Lazy typing, very useful
 sui () {
-  cd Assets/StandardUI
+  cd Assets/StandardUI 2>/dev/null || cd Assets/standardui
 }
 
 # Lazy typing, less useful
@@ -66,3 +66,6 @@ build () {
   BRANCH="$*" ; git pull ; git checkout build ; git  reset --hard ${BRANCH} ; git push -f ; git checkout ${BRANCH}     
 }
 
+puzzlecats() {
+  cd ~/Projects/puzzlecats 2>/dev/null || cd ~/Projects/Puzzlecats
+}
