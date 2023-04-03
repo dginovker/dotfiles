@@ -7,6 +7,7 @@ DISABLE_AUTO_UPDATE=true
 [ -d "/Users/dginovker/.oh-my-zsh" ] && export ZSH="/Users/dginovker/.oh-my-zsh"
 [ -d "/home/aacket/.oh-my-zsh" ] && export ZSH="/home/aacket/.oh-my-zsh"
 [ -d "/home/wacket/.oh-my-zsh" ] && export ZSH="/home/wacket/.oh-my-zsh"
+[ -d "/home/xacket/.oh-my-zsh" ] && export ZSH="/home/xacket/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -162,7 +163,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-export GOOGLE_APPLICATION_CREDENTIALS="/Users/dginovker/.config/MyConfigs/googleapplicationcredentials.json"
+export GOOGLE_APPLICATION_CREDENTIALS="/home/xacket/.config/gcloud/application_default_credentials.json"
 
 export PATH="$PATH:/Users/dginovker/.yarn/bin"
 
@@ -173,8 +174,7 @@ then
 fi
 
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/dginovker/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/dginovker/google-cloud-sdk/path.zsh.inc'; fi
+if [ -f '/opt/gcloudcli/google-cloud-sdk/path.zsh.inc' ]; then . '/opt/gcloudcli/google-cloud-sdk/path.zsh.inc'; fi
 
 # The next line enables shell command completion for gcloud.
-if [ -f '/Users/dginovker/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/dginovker/google-cloud-sdk/completion.zsh.inc'; fi
-
+if [ -f '/opt/gcloudcli/google-cloud-sdk/completion.zsh.inc' ]; then . '/opt/gcloudcli/google-cloud-sdk/completion.zsh.inc'; fi
