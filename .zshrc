@@ -165,8 +165,6 @@ export NVM_DIR="$HOME/.nvm"
 
 export GOOGLE_APPLICATION_CREDENTIALS="/home/xacket/.config/gcloud/application_default_credentials.json"
 
-export PATH="$PATH:/Users/dginovker/.yarn/bin"
-
 if command -v pyenv &> /dev/null
 then
   eval "$(pyenv init --path)"
