@@ -5,7 +5,7 @@ sui () {
 
 # Lazy typing, less useful
 sm () {
-  cd Assets/StandardModules
+  cd Assets/StandardModules 2>/dev/null || cd Assets/standardmodules
 }
 
 bumpversion() {
