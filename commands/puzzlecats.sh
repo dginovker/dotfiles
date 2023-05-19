@@ -36,7 +36,9 @@ bumpversion() {
 # Usage:
 # updatesuism
 updatesuism () {
-  veryclean
+  BRANCH="$*"
+  echo ${BRANCH-development}
+  veryclean ${BRANCH-development}
   git add Assets/StandardUI Assets/StandardModules
   git commit -m "Update StandardUI and StandardModules"
   git push
@@ -46,15 +48,18 @@ updatesuism () {
 # All of them
 # Very useful when finishing a task
 veryclean() {
+  BRANCH="$*"
+  echo ${BRANCH-development}
+  git rebase --abort
   git restore --staged .
   git checkout .
   git clean -fd 
   git bisect reset
   git checkout .
   git clean -fd 
-  git checkout development
+  git checkout ${BRANCH-development}
+  git reset --hard origin/${BRANCH-development}
   git pull
-  git reset --hard origin/development
   git submodule update --remote --force
   git submodule foreach git checkout .
   git submodule foreach git clean -fd
