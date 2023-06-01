@@ -4,10 +4,8 @@
 DISABLE_AUTO_UPDATE=true
 
 # Path to your oh-my-zsh installation.
-[ -d "/Users/dginovker/.oh-my-zsh" ] && export ZSH="/Users/dginovker/.oh-my-zsh"
-[ -d "/home/aacket/.oh-my-zsh" ] && export ZSH="/home/aacket/.oh-my-zsh"
-[ -d "/home/wacket/.oh-my-zsh" ] && export ZSH="/home/wacket/.oh-my-zsh"
-[ -d "/home/xacket/.oh-my-zsh" ] && export ZSH="/home/xacket/.oh-my-zsh"
+[ -d "/Users/$USER/.oh-my-zsh" ] && export ZSH="/Users/$USER/.oh-my-zsh"
+[ -d "/home/$USER/.oh-my-zsh" ] && export ZSH="/home/$USER/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
