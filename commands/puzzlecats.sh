@@ -68,7 +68,9 @@ veryclean() {
 }
 
 build () {
-  BRANCH="$*" ; git pull ; git checkout build ; git  reset --hard ${BRANCH} ; git push -f ; git checkout ${BRANCH}     
+  branch_name="$(git symbolic-ref HEAD 2>/dev/null)" 
+  branch_name=${branch_name##refs/heads/}
+  git pull ; git checkout build ; git  reset --hard ${branch_name} ; git push -f ; git checkout ${branch_name}     
 }
 
 puzzlecats() {
