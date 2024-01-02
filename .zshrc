@@ -161,7 +161,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-export GOOGLE_APPLICATION_CREDENTIALS="/home/xacket/.config/gcloud/application_default_credentials.json"
+export GOOGLE_APPLICATION_CREDENTIALS="/home/$USER/.config/gcloud/application_default_credentials.json"
 
 if command -v pyenv &> /dev/null
 then
