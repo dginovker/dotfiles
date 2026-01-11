@@ -1,11 +1,12 @@
 # If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH="$HOME/.local/bin:$PATH"
 
 DISABLE_AUTO_UPDATE=true
 
 # Path to your oh-my-zsh installation.
 [ -d "/Users/$USER/.oh-my-zsh" ] && export ZSH="/Users/$USER/.oh-my-zsh"
 [ -d "/home/$USER/.oh-my-zsh" ] && export ZSH="/home/$USER/.oh-my-zsh"
+[ -d "/usr/share/oh-my-zsh" ] && export ZSH="/usr/share/oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -76,6 +77,9 @@ for f in ~/Projects/dotfiles/commands/*; do source $f; done
 plugins=(
   git
   zsh-autosuggestions
+  zsh-syntax-highlighting
+  fast-syntax-highlighting
+  zsh-autocomplete
 )
 
 [ -d "$ZSH" ] && source $ZSH/oh-my-zsh.sh
@@ -168,6 +172,12 @@ then
   eval "$(pyenv init --path)"
   eval "$(pyenv init -)"
 fi
+
+# Claude Code configuration
+mkdir -p ~/.claude
+ln -sfn ~/Projects/dotfiles/claude/agents ~/.claude/agents
+ln -sfn ~/Projects/dotfiles/claude/commands ~/.claude/commands
+ln -sfn ~/Projects/dotfiles/claude/skills ~/.claude/skills
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/opt/gcloudcli/google-cloud-sdk/path.zsh.inc' ]; then . '/opt/gcloudcli/google-cloud-sdk/path.zsh.inc'; fi
