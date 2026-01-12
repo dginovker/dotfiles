@@ -58,11 +58,19 @@ Key things to look for:
 | VM slow, host idle | Low load | High iowait | Disk I/O bottleneck (check qcow2 fragmentation) |
 | VM slow, both busy | High load | High CPU usage | Legitimate high workload, may need more resources |
 
+## Common patterns (continued)
+
+| Symptom | Cause | Solution |
+|---------|-------|----------|
+| Slow UI redraw (visible top-to-bottom refresh) | Heavy swap usage, even with free RAM | Clear swap with `sudo swapoff -a` (safe if available RAM > swap used) |
+
 ## Quick fixes
 
 - **CPU starvation**: `renice 19 -p $(pgrep -d, PROCESS_NAME)` to deprioritize competing processes
 - **Too many vCPUs**: Reduce VM vCPUs to 2-4 when host is busy
 - **I/O issues**: Consider switching qcow2 to raw format or enabling `cache=none`
+- **Swap thrashing**: If swap is heavily used but RAM is available, clear it with `sudo swapoff -a`. To restore: check `swapon --show` first - if it's zram, use `sudo systemctl restart systemd-zram-setup@zram0` (not `swapon -a`, which only reads fstab)
+- **Memory overcommit**: Total VM RAM + host needs should not exceed physical RAM. Each VM with 4GB + host apps can easily exhaust 32GB
 
 ## Additional diagnostic commands
 

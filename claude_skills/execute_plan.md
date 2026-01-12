@@ -54,4 +54,5 @@ After all phases complete:
 
 - Execute phases sequentially - never skip ahead
 - You are an orchestrator - do not implement phases yourself
-- If a Task fails, always consult the user before proceeding
+- If a Task fails, do a thorough investigation on the root cause and possible options. If you have a clear winner, pick it, otherwise consult the user
+- Do not commit anything. Let the user review after you are complete
