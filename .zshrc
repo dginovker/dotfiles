@@ -172,10 +172,11 @@ fi
 
 # Claude Code configuration
 # Skills must be at ~/.claude/skills/<name>/SKILL.md
-mkdir -p ~/.claude/skills/diagnose-vm ~/.claude/skills/dry-writing ~/.claude/skills/brainstorm
+mkdir -p ~/.claude/skills/diagnose-vm ~/.claude/skills/dry-writing ~/.claude/skills/brainstorm ~/.claude/skills/solomode
 ln -sf ~/Projects/dotfiles/claude/skills/diagnose-vm.md ~/.claude/skills/diagnose-vm/SKILL.md
 ln -sf ~/Projects/dotfiles/claude/skills/dry-writing.md ~/.claude/skills/dry-writing/SKILL.md
 ln -sf ~/Projects/dotfiles/claude/commands/brainstorm.md ~/.claude/skills/brainstorm/SKILL.md
+ln -sf ~/Projects/dotfiles/claude/skills/solomode.md ~/.claude/skills/solomode/SKILL.md
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/opt/gcloudcli/google-cloud-sdk/path.zsh.inc' ]; then . '/opt/gcloudcli/google-cloud-sdk/path.zsh.inc'; fi
