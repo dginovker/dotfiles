@@ -1,5 +1,5 @@
 # If you come from bash you might have to change your $PATH.
-export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.bun/bin:$HOME/.local/bin:$PATH"
 
 DISABLE_AUTO_UPDATE=true
 
