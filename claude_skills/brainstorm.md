@@ -11,5 +11,8 @@ You should:
 
 At the end, you should produce a succinct .md plan file for how the implementation should work, and recommend the user runs the `/create_plan` command.
 
-Important notes:
+Notes:
 * YAGNI: Do not add ANYTHING to the plan that is not strictly required for the user request.
+* Do not include a summary. It's a waste of tokens.
+* If you have presented multiple options to the user and the user has picked one, do not include the other options as part of the plan.
+* Tell the user the location of the .md file, so the user can review it

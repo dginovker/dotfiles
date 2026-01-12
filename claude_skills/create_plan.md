@@ -6,28 +6,20 @@ You are creating an implementation plan. Follow this process exactly.
 
 ## Phase 1: Codebase Exploration
 
-Use the Task tool with `subagent_type=Explore` to ruthlessly examine the codebase. Focus on:
+Use the Task tool with `subagent_type=Explore` to examine the codebase. Focus on:
 - Files related to the feature request
 - Existing patterns and conventions
 - Dependencies and constraints
 
 Do not proceed until you understand the relevant code thoroughly.
 
-## Phase 2: Present Approaches
+## Phase 2: Break Into Phases
 
-Present 2-3 distinct implementation approaches using AskUserQuestion. For each approach:
-- One sentence description
-- Key trade-off (what you gain vs what it costs)
-
-Do not add approaches that aren't meaningfully different.
-
-## Phase 3: Break Into Phases
-
-After user selects an approach, break it into sequential phases. Each phase must be:
+Break the feature into sequential phases. Each phase must be:
 - **Testable**: Has a concrete way to verify it works
 - **Minimal**: Nothing beyond what's strictly required
 
-## Phase 4: Write and Validate Each Phase
+## Phase 3: Write and Validate Each Phase
 
 For each phase:
 
@@ -61,21 +53,21 @@ Write each phase as `phase-N.md`:
 [One sentence - what this phase accomplishes]
 
 ## Implementation
-[Files to create/modify and specific changes]
+[High-level summary of changes - which files and what kind of changes, not full code]
 
-## Test Criteria
-
-### Goal
-Validate that [specific behavior] works as expected.
-
-### Verification
-Create [test file/manual test] and run [commands] to confirm:
-- [Observable outcome]
+## Verification
+[Concrete command or test to confirm it works]
 ```
+
+## Phase 4: Present Overview
+
+After all phases are written, present the user with:
+1. A brief summary of what each phase does
+2. How each phase will be tested
 
 ## Rules
 
 - YAGNI: Do not add anything not strictly required
 - Each phase builds on previous phases
-- Test criteria must be goal-focused, not checkbox-focused
-- Prefer concrete commands over vague manual checks
+- Keep implementation details high-level (file names and change descriptions, not code)
+- Test criteria must be goal-focused with concrete verification steps
