@@ -77,9 +77,6 @@ for f in ~/Projects/dotfiles/commands/*; do source $f; done
 plugins=(
   git
   zsh-autosuggestions
-  zsh-syntax-highlighting
-  fast-syntax-highlighting
-  zsh-autocomplete
 )
 
 [ -d "$ZSH" ] && source $ZSH/oh-my-zsh.sh
