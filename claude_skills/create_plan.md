@@ -24,7 +24,6 @@ Do not add approaches that aren't meaningfully different.
 ## Phase 3: Break Into Phases
 
 After user selects an approach, break it into sequential phases. Each phase must be:
-- **Commitable**: A single logical commit
 - **Testable**: Has a concrete way to verify it works
 - **Minimal**: Nothing beyond what's strictly required
 
@@ -42,7 +41,6 @@ Read and validate the implementation phase at .claude/plans/.pending/phase-N.md
 Check:
 1. Does it have a concrete test goal and verification steps?
 2. Is everything strictly required for the stated objective?
-3. Is it small enough to be a single commit?
 
 Respond with ONLY:
 - "PASS" if all checks pass
@@ -73,9 +71,6 @@ Validate that [specific behavior] works as expected.
 ### Verification
 Create [test file/manual test] and run [commands] to confirm:
 - [Observable outcome]
-
-## Commit
-`type: message`
 ```
 
 ## Rules

@@ -29,11 +29,6 @@ Your job:
 2. Implement exactly what's in the Implementation section - nothing more
 3. Run the verification from Test Criteria
 4. If verification fails: ruthlessly analyze, fix, and retry
-5. Once verification passes: commit using the exact message from the Commit section (append co-author line)
-
-When done, respond with:
-- "SUCCESS: [commit hash]" if committed
-- "FAILED: [reason]" if you could not complete the phase
 ```
 
 ### 2c. Check Result
@@ -41,7 +36,6 @@ When done, respond with:
 After the Task returns:
 
 **If SUCCESS:**
-- Verify the commit exists using `git log -1 --oneline`
 - Report progress to user
 - Continue to next phase
 
@@ -52,9 +46,9 @@ After the Task returns:
 ## Step 3: Completion
 
 After all phases complete:
-1. Summarize what was implemented
-2. List all commits made (use `git log --oneline` for the phase commits)
-3. Ask if user wants to delete the phase files from `.claude/plans/`
+1. Delete phase files from `.claude/plans/`
+2. Summarize what was implemented
+3. Summarize how you tested it, and recommendations on next steps
 
 ## Rules
 
