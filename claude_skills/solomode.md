@@ -23,6 +23,27 @@ In SOLOMODE, you are tasked with reaching your target completely solo. You are n
 - Add thorough logging to understand what is happening in the editor during your tests
 - ONLY EVER VALIDATE SUCCESS CRITERIA THROUGH LOGGING FROM YOUR TESTS
 
+### Critical Validation Rules
+
+**LOGS ARE NOT PROOF OF SUCCESS** - Just because logs show components initialized doesn't mean the end-to-end flow works.
+
+- ❌ "Context gathering logs look good" → Context might not reach the agent
+- ❌ "Agent initialized successfully" → Agent might not be callable
+- ❌ "Bridge method exists" → Bridge method might not be registered/callable
+- ❌ "Message sent to UI" → Message might not trigger agent response
+
+**Silent failures are the most dangerous** - If something seems to work but produces no result, this is a BUG not success. Find where the chain breaks.
+
+**Test end-to-end FIRST** - Don't test individual components in isolation. Test the complete user-facing behavior.
+
+**Take screenshots throughout** - Not just at the end. Verify UI state at each major step.
+
+**Rule: SUCCESS = Complete user-facing behavior works, proven with:**
+- End-to-end test showing desired outcome
+- Screenshot evidence of UI showing result
+- Logs proving NO errors in the full chain
+- Database/state showing expected changes (if applicable)
+
 ## Not Quitting is PARAMOUNT
 
 - Do not quit if you are stuck. Try a completely different approach if needed.
