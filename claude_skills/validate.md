@@ -46,6 +46,77 @@ Based on the test API design, these endpoints should be available:
 
 **LOGS ALONE ARE NOT PROOF** - Components showing "initialized" doesn't mean the feature works end-to-end.
 
+**CODE REVIEW IS NOT VALIDATION** - Reading CSS/code changes and saying "looks correct" is NOT testing. You MUST run the actual Godot editor and verify the behavior.
+
+### For UI/Layout Changes (Responsive Design, Styling, etc.)
+
+When validating UI or layout changes, code review is INSUFFICIENT. You MUST:
+
+1. **Start Godot with the plugin running**
+   ```bash
+   cd gdext && ./run.sh
+   ```
+
+2. **Add instrumentation to log layout state**
+   - Inject console.log statements that output element positions, visibility, CSS properties
+   - Example: Log `getBoundingClientRect()`, `window.getComputedStyle()`, visibility checks
+   - Ensure logs are captured (check CEF logs or stdout)
+
+3. **Collect evidence from running Godot**
+   - Check logs showing element positions and properties
+   - Verify values match expected behavior (e.g., `visible: true`, `position: sticky`)
+   - Collect multiple samples to prove consistency
+
+4. **Test at multiple viewport sizes** (if responsive design)
+   - Resize the Godot dock panel to different widths
+   - Collect logs at narrow (250-350px), medium (500px), and wide (768px+) sizes
+   - Verify layout works at all sizes
+
+5. **Take screenshots as visual proof**
+   - Use CDP `Page.captureScreenshot` or system screenshot tools
+   - Show the UI at different states/sizes
+   - Include screenshots in validation report
+
+**Example: Responsive Layout Validation**
+
+```javascript
+// Add to React component for testing
+useEffect(() => {
+  const logLayout = () => {
+    const header = document.querySelector('header');
+    const input = document.querySelector('.input-area');
+
+    console.log('[LAYOUT TEST]', JSON.stringify({
+      viewport: { width: window.innerWidth, height: window.innerHeight },
+      header: {
+        visible: header.getBoundingClientRect().top >= 0,
+        position: window.getComputedStyle(header).position
+      },
+      input: {
+        visible: input.getBoundingClientRect().bottom <= window.innerHeight,
+        position: window.getComputedStyle(input).position
+      }
+    }));
+  };
+
+  logLayout();
+  const interval = setInterval(logLayout, 5000);
+  window.addEventListener('resize', logLayout);
+
+  return () => {
+    clearInterval(interval);
+    window.removeEventListener('resize', logLayout);
+  };
+}, []);
+```
+
+Then check logs:
+```bash
+grep "LAYOUT TEST" /tmp/godot-run2.log | tail -5
+```
+
+**Never claim UI changes work without running Godot and collecting evidence.**
+
 ### Automated Test Flow (Use Chrome DevTools Protocol)
 
 For validating agent features, you MUST test the complete flow:
