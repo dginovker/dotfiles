@@ -148,7 +148,84 @@ ws.send(JSON.stringify({ id: '1', path: '/ready', method: 'GET' }));
 // Wait for response: { id: '1', result: { ready: true, checks: [...] } }
 ```
 
-### 2. Execute a Tool
+### 2. Taking Screenshots
+
+**IMPORTANT**: Use the `/screenshot` endpoint to capture the entire Godot editor window.
+
+```javascript
+// Take a screenshot of the editor
+ws.send(JSON.stringify({
+  id: 'screenshot-1',
+  path: '/screenshot',
+  method: 'POST'
+}));
+
+// Response format:
+// {
+//   id: 'screenshot-1',
+//   result: {
+//     result: {
+//       success: true,
+//       type: 'image',
+//       data: '<base64-encoded PNG data>'
+//     }
+//   }
+// }
+
+// Save the screenshot
+ws.on('message', (data) => {
+  const response = JSON.parse(data.toString());
+  if (response.id === 'screenshot-1') {
+    const imageData = response.result.result.data;  // Note the double .result
+    const buffer = Buffer.from(imageData, 'base64');
+    fs.writeFileSync('/tmp/screenshot.png', buffer);
+  }
+});
+```
+
+**Key Points:**
+- The screenshot captures the ENTIRE Godot editor window as it currently appears
+- Image data is returned as base64-encoded PNG in `response.result.result.data`
+- No parameters needed - it always captures the full editor window
+- The underlying tool is `get_editor_screenshot` (can also be called via `/call-tool`)
+- For UI testing, manually interact with the editor first, then take a screenshot
+
+**Example: Complete Screenshot Script**
+```javascript
+const WebSocket = require('ws');
+const fs = require('fs');
+
+const ws = new WebSocket('ws://localhost:5173/__test_api_ws');
+
+ws.on('open', () => {
+  console.log('Taking screenshot...');
+  ws.send(JSON.stringify({
+    id: 'screenshot',
+    path: '/screenshot',
+    method: 'POST'
+  }));
+});
+
+ws.on('message', async (data) => {
+  // Handle Blob data from browser WebSocket
+  let text = data;
+  if (data instanceof Buffer) {
+    text = data.toString('utf8');
+  }
+
+  const response = JSON.parse(text);
+  const output = response.result?.result;
+
+  if (output?.type === 'image' && output.data) {
+    const buffer = Buffer.from(output.data, 'base64');
+    fs.writeFileSync('/tmp/godot-screenshot.png', buffer);
+    console.log(`Screenshot saved: ${buffer.length} bytes`);
+    ws.close();
+  }
+});
+```
+
+### 3. Execute a Tool
 
 ```javascript
 ws.send(JSON.stringify({
@@ -162,7 +239,7 @@ ws.send(JSON.stringify({
 }));
 ```
 
-### 3. Verify Changes
+### 4. Verify Changes
 
 ```javascript
 // Get errors/logs

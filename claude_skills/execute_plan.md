@@ -50,6 +50,15 @@ After all phases complete:
 2. Summarize what was implemented
 3. Summarize how you tested it, and recommendations on next steps
 
+## Step 4: Required Testing
+
+After completing all phases, you MUST run the `/ziva-mcp-testing` skill to verify the implementation works correctly:
+1. Call the Skill tool with `skill: "ziva-mcp-testing"`
+2. Wait for test results including screenshots and logs
+3. Report test results to the user
+
+Do NOT skip this step. Visual verification is required for all Ziva UI changes.
+
 ## Rules
 
 - Execute phases sequentially - never skip ahead
