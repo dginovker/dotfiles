@@ -9,8 +9,7 @@ You are performing an incremental cleanup of the codebase. Your goal: remove ONE
 ## Success Criteria
 
 1. LoC is STRICTLY LOWER than baseline
-2. `./run.sh` builds without error
-3. ALL tests in your test plan PASS via `/ziva-mcp-testing`
+2. ALL tests in your test plan PASS via `/ziva-mcp-testing`
 
 ## Phase 1: Baseline
 
@@ -60,7 +59,7 @@ Create a TEST PLAN with 5-10 specific tests that exercise the feature area. For 
 - Test: Verify chat history loads properly
 
 **The test plan must be executable via `/ziva-mcp-testing`** - meaning tests that:
-- Launch Godot with the plugin
+- Launch Godot with the plugin via ./run.sh
 - Connect via the test API WebSocket
 - Execute tool calls and verify responses
 - Check UI state via bridge methods
