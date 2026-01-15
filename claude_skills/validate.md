@@ -1,5 +1,5 @@
 ---
-description: Quick validation - verify Ziva is working
+description: Use this Skill whenever you want to validate your Ziva changes are working.
 ---
 
 You are validating the Ziva plugin after a code change or build.
@@ -76,6 +76,7 @@ When validating UI or layout changes, code review is INSUFFICIENT. You MUST:
    - Use CDP `Page.captureScreenshot` or system screenshot tools
    - Show the UI at different states/sizes
    - Include screenshots in validation report
+   - Make sure the screenshots show what you want to validate. If they don't, figure out why not.
 
 **Example: Responsive Layout Validation**
 
@@ -175,6 +176,7 @@ For validating agent features, you MUST test the complete flow:
 ❌ **Don't test components in isolation** - Each component might work but the chain is broken
 ❌ **Don't skip the E2E test** - Always send a real message and verify response
 ❌ **Don't ignore silent failures** - No errors + no results = BUG
+❌ **Don't give up if you can't test** - If the tools to test your change don't exist, you need to develop them
 
 ### What TO Do
 

@@ -63,7 +63,7 @@ Write each phase as `phase-N.md`:
 
 After all phases are written, present the user with:
 1. A brief summary of what each phase does
-2. How each phase will be tested
+2. How each phase will be tested (always mention using the /validate Skill)
 
 ## Rules
 
