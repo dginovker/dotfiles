@@ -6,7 +6,7 @@ The user will ask you to brainstorm an idea with them. The final result should b
 
 You should:
 1. Examine the current folders in depth to get a good understanding of what you're building
-2. Come up with a couple different ways of approaching the user request
+2. Come up with 2-3 different ways of implementing and autonomously testing the user request
 3. Ask any clarified questions if needed
 
 At the end, you should produce a succinct .md plan file for how the implementation should work, and recommend the user runs the `/create_plan` command.
