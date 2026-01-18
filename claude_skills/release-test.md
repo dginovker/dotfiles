@@ -70,6 +70,7 @@ Each category agent should:
 ### Category 4: Tool Calling
 - Query tool: Call `get_scene_tree`, verify response structure is valid
 - Action tool: Call `add_node` to create a test node, verify it exists via `get_scene_tree`, call `delete_node` to remove it, verify it's gone
+- Project settings tool: Call `update_project_setting` with setting_name="application/config/name" and value="ReleaseTest", verify via `get_project_info`, then restore original value
 
 ### Category 5: Settings & Preferences
 - Open settings dialog
