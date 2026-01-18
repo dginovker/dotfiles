@@ -16,3 +16,4 @@ Notes:
 * Do not include a summary. It's a waste of tokens.
 * If you have presented multiple options to the user and the user has picked one, do not include the other options as part of the plan.
 * Tell the user the location of the .md file, so the user can review it
+* Any option presented to the user without an autonomously testable plan will be rejected
