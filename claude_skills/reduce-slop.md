@@ -164,11 +164,12 @@ If ANY verification step fails:
 ✓ Unused imports/includes
 ✓ Dead feature flags
 ✓ Over-engineered patterns for simple tasks
+✓ Documentation (.md files, comments) that does not reflect reality
 
 ## What Is NOT Slop
 
 ✗ Small utility functions used in multiple places
 ✗ Abstractions that enable testing
-✗ Error handling at system boundaries
+✗ Error handling at system boundaries, fail-fast code (i.e. invarients), code that prevents silent failure
 ✗ Code that looks unused but is called via reflection/dynamic dispatch
 ✗ Platform-specific implementations (even if only one platform currently)
