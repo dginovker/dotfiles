@@ -89,6 +89,7 @@ Each category agent should:
 - Countdown timer works when rate limited
 
 ### Category 7: Payment UI
+- Set yourself to be getting rate limited on the Free plan
 - Upgrade button is clickable
 - Plan comparison displays correctly
 - Stripe embed loads
@@ -99,6 +100,7 @@ Each category agent should:
   - CVC: Any 3 digits (e.g., `123`)
   - ZIP: Any 5 digits (e.g., `12345`)
   - Submit payment and verify success state
+- Expect yourself to no longer be getting rate limited
 
 ### Category 8: UI Validation
 - Chat input accepts text and submits
