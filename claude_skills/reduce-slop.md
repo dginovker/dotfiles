@@ -164,7 +164,8 @@ If ANY verification step fails:
 ✓ Unused imports/includes
 ✓ Dead feature flags
 ✓ Over-engineered patterns for simple tasks
-✓ Documentation (.md files, comments) that does not reflect reality
+✓ Outdated documentation (.md files, comments) that do not reflect the code
+✓ Outdated user-facing text (pricing pages) that do not reflect the code
 
 ## What Is NOT Slop
 
