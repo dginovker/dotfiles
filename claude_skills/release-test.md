@@ -77,6 +77,10 @@ Each category agent should:
 - Toggle settings and verify state changes
 - Model selection works
 - Settings persist after closing/reopening
+- **UI Mode setting**: Toggle "Use main screen tab (like 2D/3D)" setting:
+  - When enabled: Ziva panel should appear as a main screen tab alongside 2D/3D/Script
+  - When disabled: Ziva panel should appear in the side dock next to Scene/Import tabs
+  - Verify panel is functional (can send messages) and visually correct (screenshot) in both positions
 
 ### Category 6: Rate Limiting
 - Rate limit status displays correctly
@@ -89,6 +93,12 @@ Each category agent should:
 - Plan comparison displays correctly
 - Stripe embed loads
 - Back navigation works
+- **Stripe checkout flow**: Complete a test purchase using Stripe test credentials:
+  - Card number: `4242 4242 4242 4242`
+  - Expiry: Any future date (e.g., `12/34`)
+  - CVC: Any 3 digits (e.g., `123`)
+  - ZIP: Any 5 digits (e.g., `12345`)
+  - Submit payment and verify success state
 
 ### Category 8: UI Validation
 - Chat input accepts text and submits
