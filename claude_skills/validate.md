@@ -185,6 +185,83 @@ For validating agent features, you MUST test the complete flow:
 ✅ **Use screenshots liberally** - Visual proof of working UI
 ✅ **Check for chain breaks** - If feature fails, find exactly where the chain breaks
 
+## 🚨 CRITICAL: Test Persistence and Restart Scenarios
+
+**CLICKING A BUTTON IS NOT PROOF IT WORKS** - Many features require data to persist across restarts.
+
+When testing features that involve:
+- Settings/preferences
+- User configuration
+- Saved state
+- Database changes
+- File system modifications
+
+You **MUST** test that changes persist after:
+1. **Restarting the application** (Godot editor)
+2. **Closing and reopening dialogs**
+3. **Switching between modes/states**
+
+### Example: Testing Settings Persistence
+
+**❌ INSUFFICIENT TEST:**
+```javascript
+// Set value
+await c2g_setEditorSetting({ key: 'my/setting', value: false });
+// Check value immediately
+const value = await c2g_getEditorSetting({ key: 'my/setting' });
+console.log('✓ Setting changed to:', value); // FALSE POSITIVE!
+```
+
+**✅ PROPER TEST:**
+```javascript
+// 1. Set value
+await c2g_setEditorSetting({ key: 'my/setting', value: false });
+console.log('Set value to false');
+
+// 2. Verify save was called
+// Check logs for: "saved", "ResourceSaver", "mark_setting_changed"
+
+// 3. RESTART GODOT (kill and restart)
+// ... restart code ...
+
+// 4. Read value AFTER restart
+const valueAfterRestart = await c2g_getEditorSetting({ key: 'my/setting' });
+if (valueAfterRestart === false) {
+  console.log('✓ Setting persisted!');
+} else {
+  console.error('✗ Setting DID NOT persist - only changed in memory!');
+}
+```
+
+### Common Persistence Pitfalls
+
+1. **Settings not saved to disk** - Must call save() or mark_changed()
+   - EditorSettings: Requires `mark_setting_changed()` + `ResourceSaver::save()`
+   - ProjectSettings: Requires `save_custom()`
+   - Database: Requires explicit commit/write
+
+2. **Changes only in memory** - Values change but don't persist
+   - Test by restarting the application
+   - Check for save methods being called in logs
+
+3. **Async save failures** - Save returns success but fails silently
+   - Check Error return codes
+   - Verify files on disk actually changed
+   - Check logs for save errors
+
+### Testing Checklist for Persistence
+
+When testing ANY feature that modifies state:
+
+- [ ] ✅ Set/change the value
+- [ ] ✅ Verify the change took effect immediately
+- [ ] ✅ Check logs show save/persist operations
+- [ ] ✅ **RESTART the application**
+- [ ] ✅ Verify value persisted after restart
+- [ ] ✅ If failed, check Error return codes and add proper save calls
+
+**NEVER mark validation as complete without testing restart scenarios.**
+
 ## Important
 
 - **Adapt to what you discover** - Don't follow rigid steps
