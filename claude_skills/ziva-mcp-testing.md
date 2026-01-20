@@ -79,16 +79,24 @@ ws.on('message', (data) => {
 
 ## Available Endpoints
 
-All endpoints documented in `apps/plugin-app/src/lib/test-api.ts`:
+**IMPORTANT:** Always discover endpoints dynamically by calling `GET /` first. Do not assume endpoints exist - the API evolves and hardcoded lists get stale.
 
-| Path | Method | Description | Parameters |
-|------|--------|-------------|------------|
-| `/` | GET | List all endpoints | - |
-| `/ready` | GET | Check if plugin is ready | - |
-| `/health` | GET | Detailed health check | - |
-| `/state` | GET | Get webview state | - |
-| `/call-tool` | POST | Execute a Godot tool | `{toolName, toolArgs}` |
-| `/screenshot` | POST | Take editor screenshot | - |
+```javascript
+// FIRST: Discover all available endpoints
+ws.send(JSON.stringify({ id: 'discover', path: '/', method: 'GET' }));
+
+// Response:
+// {
+//   endpoints: [
+//     { path: '/ready', description: 'Check if plugin is ready' },
+//     { path: '/call-tool', description: 'Execute a Godot tool', method: 'POST' },
+//     { path: '/send-message', description: 'Send a test message', method: 'POST' },
+//     ... (more endpoints)
+//   ]
+// }
+```
+
+Use the discovery response to determine what endpoints are available before making assumptions.
 
 ### Response Format
 
@@ -140,6 +148,8 @@ All tool calls return:
 - `rm` - Remove file from project
 
 ## Testing Workflow
+
+> **Tip:** Before running chat/messaging tests, call `POST /reset-usage` to clear rate limit usage for the current user. This prevents tests from being blocked by daily limits.
 
 ### 1. Check Plugin Readiness
 
