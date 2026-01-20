@@ -27,13 +27,15 @@ All testing follows this mindset:
 
 ## Before You Start
 
-1. **Explore the repo** - Read the README.md and understand the codebase 
+1. **Explore the repo** - Read the README.md and understand the codebase
 
 2. **Understand the test API** that has lots of information about in the `/ziva-mcp-testing` Skill
 
 3. **Kill existing processes** before starting fresh (be specific - don't kill all Godot/Node instances, only ones matching the Ziva project).
 
 4. **Start the environment** using the repo's documented approach (look for run.sh or similar in the READMEs).
+
+5. **Reset rate limits** - Before running chat tests, call `POST /reset-usage` to clear any existing rate limit usage for the test user. This ensures chat tests won't be blocked by daily limits.
 
 ## Test Execution
 
@@ -60,6 +62,7 @@ Each category agent should:
 - Invalid API key shows error
 
 ### Category 3: Chat & Messaging
+**IMPORTANT**: Call `POST /reset-usage` first to clear rate limits before these tests.
 - Send a simple message and receive response
 - Verify streaming works (partial responses appear)
 - Message history persists
@@ -73,7 +76,7 @@ Each category agent should:
 - Project settings tool: Call `update_project_setting` with setting_name="application/config/name" and value="ReleaseTest", verify via `get_project_info`, then restore original value
 
 ### Category 5: Settings & Preferences
-- Open settings dialog
+- Open settings dialog via `/open-settings`, close via `/close-settings`, verify `settingsOpen` state changes
 - Toggle settings and verify state changes
 - Model selection works
 - Settings persist after closing/reopening
