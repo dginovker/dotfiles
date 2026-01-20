@@ -127,6 +127,7 @@ Each category agent should:
 - Rapid message sending
 - Large file in project
 - Empty project handling
+- Scrolling in chat: Scroll up/down in a long chat conversation, verify scrollbar is responsive and doesn't freeze
 
 ## Failure Handling Protocol
 
