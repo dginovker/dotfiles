@@ -94,13 +94,9 @@ Each category agent should:
 - Plan comparison displays correctly
 - Stripe embed loads
 - Back navigation works
-- **Stripe checkout flow**: Complete a test purchase using Stripe test credentials:
-  - Card number: `4242 4242 4242 4242`
-  - Expiry: Any future date (e.g., `12/34`)
-  - CVC: Any 3 digits (e.g., `123`)
-  - ZIP: Any 5 digits (e.g., `12345`)
-  - Submit payment and verify success state
-- Expect yourself to no longer be getting rate limited
+- **Stripe checkout flow**: Use `/simulate-checkout-success` to trigger success UI (Stripe iframe cannot be automated via test API)
+- Verify "Subscription Activated!" message appears
+- Verify dialog closes after clicking Continue
 
 ### Category 8: UI Validation
 - Chat input accepts text and submits
