@@ -89,3 +89,28 @@ virsh qemu-monitor-command VM_NAME --hmp "info status"
 ```bash
 virsh domblkstat VM_NAME vda
 ```
+
+## Guest agent commands
+
+`qemu-guest-agent` is installed on the guest.
+
+**Check agent is responding:**
+```bash
+virsh qemu-agent-command VM_NAME '{"execute":"guest-ping"}'
+```
+
+**Get guest info:**
+```bash
+virsh domhostname VM_NAME --source agent
+virsh domifaddr VM_NAME --source agent
+virsh domfsinfo VM_NAME
+```
+
+**Run a command in guest:**
+```bash
+# Returns PID
+virsh qemu-agent-command VM_NAME '{"execute":"guest-exec","arguments":{"path":"/usr/bin/COMMAND","arg":["ARG1"],"capture-output":true}}'
+
+# Get output (base64 encoded)
+virsh qemu-agent-command VM_NAME '{"execute":"guest-exec-status","arguments":{"pid":PID}}'
+```
