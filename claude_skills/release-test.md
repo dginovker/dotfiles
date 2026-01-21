@@ -62,6 +62,17 @@ Each category agent should:
 - Invalid API key shows error
 
 ### Category 3: Chat & Messaging
+**PREREQUISITE**: Authenticate before running chat tests using the OAuth auto-approve flow:
+
+1. Check `/state` - if `user` exists, skip to tests
+2. If not authenticated:
+   a. Call `POST /start-device-auth` to begin OAuth device flow
+   b. Poll `GET /get-auth-state` until `verificationUri` and `userCode` are available
+   c. Open browser via `xdg-open "{verificationUri}"` (URL already includes auto_approve=true in dev mode; requires logged-in web session at localhost:3000)
+   d. Poll `/get-auth-state` until `isAuthenticating` is false and `isPolling` is false
+   e. Verify `/state` now has `user` object
+3. If authentication fails after 30s, mark all chat tests as `TESTABILITY_ISSUE` with note: "OAuth auto-approve requires logged-in web session at localhost:3000"
+
 **IMPORTANT**: Call `POST /reset-usage` first to clear rate limits before these tests.
 - Send a simple message and receive response
 - Verify streaming works (partial responses appear)
