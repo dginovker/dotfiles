@@ -139,6 +139,14 @@ Each category agent should:
 - Empty project handling
 - Scrolling in chat: Scroll up/down in a long chat conversation, verify scrollbar is responsive and doesn't freeze
 
+### Category 12: Build Verification
+- Docker daemon is running and accessible
+- Linux x64 Docker image builds without errors
+- Linux x64 compilation completes successfully
+- Binary has correct architecture (x86-64)
+- Release zip creation works via `make_zip.sh linux_x86_64`
+- ARM64 configuration is correct (CEF disabled, dependencies present in Dockerfile)
+
 ## Failure Handling Protocol
 
 When a test fails:
