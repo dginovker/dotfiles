@@ -141,11 +141,13 @@ Each category agent should:
 
 ### Category 12: Build Verification
 - Docker daemon is running and accessible
+- Docker buildx is installed and configured with multiarch builder
+- QEMU ARM64 emulation is registered (`/proc/sys/fs/binfmt_misc/qemu-aarch64` exists)
 - Linux x64 Docker image builds without errors
 - Linux x64 compilation completes successfully
-- Binary has correct architecture (x86-64)
+- Linux ARM64 Docker image builds without errors using buildx
+- Binary has correct architecture (x86-64 for x64, aarch64 for arm64)
 - Release zip creation works via `make_zip.sh linux_x86_64`
-- ARM64 configuration is correct (CEF disabled, dependencies present in Dockerfile)
 
 ## Failure Handling Protocol
 
