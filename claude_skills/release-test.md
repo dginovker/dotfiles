@@ -48,6 +48,13 @@ Each category agent should:
 
 ## Test Categories
 
+### Category 0: Path Verification
+- Verify monorepo exists at ~/Projects/ziva (not ~/Projects/ziva/ziva-agent-plugin-godot-private)
+- Verify gdext directory exists at ~/Projects/ziva/gdext
+- Verify run.sh script exists at ~/Projects/ziva/run.sh
+- Verify no old path references in skills: `! grep -r "ziva-agent-plugin-godot-private" ~/Projects/dotfiles/claude_skills/`
+- Verify startup script has new path: `grep -q "cd ~/Projects/ziva" ~/startup_update.sh`
+
 ### Category 1: Startup & Initialization
 - Server responds to health check
 - Godot launches without errors
