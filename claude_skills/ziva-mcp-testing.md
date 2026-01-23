@@ -31,7 +31,7 @@ Claude Code ──WebSocket──▶ Vite Dev Server ──▶ React App (plugin
 ## Starting the Plugin
 
 ```bash
-cd /home/w/Projects/ziva/ziva-agent-plugin-godot-private/gdext
+cd /home/w/Projects/ziva/gdext
 ./run.sh
 ```
 
@@ -284,7 +284,7 @@ ws.send(JSON.stringify({
 pkill -f "godot.*ziva-agent-plugin"
 
 # Reset project state
-cd /home/w/Projects/ziva/ziva-agent-plugin-godot-private
+cd /home/w/Projects/ziva
 git checkout project/
 ```
 
