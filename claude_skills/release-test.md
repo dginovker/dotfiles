@@ -107,8 +107,9 @@ Each category agent should:
 ### Category 6: Rate Limiting
 - Rate limit status displays correctly
 - Progress bars show usage
-- Tier badge shows current plan
+- Tier badge shows current plan (uses subscriptionTier, NOT rateLimitTier)
 - Countdown timer works when rate limited
+- Test tier override: Set user's testTierOverride to "pro" via `/api/test/update-user`, verify rate limits reflect pro tier (not free)
 
 ### Category 7: Payment UI
 - Set yourself to be getting rate limited on the Free plan
