@@ -78,7 +78,7 @@ Each category agent should:
    c. Open browser via `xdg-open "{verificationUri}"` (URL already includes auto_approve=true in dev mode; requires logged-in web session at localhost:3000)
    d. Poll `/get-auth-state` until `isAuthenticating` is false and `isPolling` is false
    e. Verify `/state` now has `user` object
-3. If authentication fails after 30s, mark all chat tests as `TESTABILITY_ISSUE` with note: "OAuth auto-approve requires logged-in web session at localhost:3000"
+3. If authentication fails, still attempt `/send-message` and other endpoints that don't require auth. Only mark a test as TESTABILITY_ISSUE if the endpoint itself returns an error indicating the test cannot be performed.
 
 **IMPORTANT**: Call `POST /reset-usage` first to clear rate limits before these tests.
 - Send a simple message and receive response
@@ -137,6 +137,7 @@ Each category agent should:
 - Network error handling
 - Bridge disconnect shows message
 - Server restart recovery
+- Init error screen has "Open Logs" button (inject test error in app-store.ts, verify button appears and opens logs folder)
 
 ### Category 11: Edge Cases
 - Very long message (1000+ chars)
@@ -183,6 +184,31 @@ Examples of testability issues:
 - No API access to verify UI-only behavior
 - Timing issues making verification flaky
 - State resets before verification possible
+
+## TESTABILITY_ISSUE Whitelist
+
+Only these 4 scenarios may be marked as TESTABILITY_ISSUE:
+
+1. **Stripe iframe interaction** - Cross-origin security prevents automation of Stripe payment forms
+2. **Bridge disconnect UI verification** - Requires killing processes which disrupts the test environment
+3. **Server restart recovery** - Cannot test through the API being killed
+4. **Visual-only tests with no corresponding state field** - UI elements with no programmatic verification method
+
+Any TESTABILITY_ISSUE outside this whitelist will be challenged by the orchestrator.
+
+### Orchestrator TESTABILITY_ISSUE Validation
+
+When a category agent returns any test with status `TESTABILITY_ISSUE`:
+
+1. **Check whitelist**: If it matches (Stripe iframe, bridge disconnect, server restart, visual-only), accept it
+2. **Verify endpoint exists**: Call `GET /` to list endpoints
+3. **If endpoint exists**: Re-run that test with: "Endpoint [X] exists. Call it and report pass/fail."
+4. **If missing**: Accept and log as gap
+
+Reject TESTABILITY_ISSUE for:
+- "Auth failed so I didn't try"
+- "Endpoint might not work"
+- "Wasn't sure how to verify"
 
 ## Results Format
 
