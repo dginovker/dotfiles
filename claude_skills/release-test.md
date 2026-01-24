@@ -109,7 +109,7 @@ Each category agent should:
 - Progress bars show usage
 - Tier badge shows current plan (uses subscriptionTier, NOT rateLimitTier)
 - Countdown timer works when rate limited
-- Test tier override: Set user's testTierOverride to "pro" via `/api/test/update-user`, verify rate limits reflect pro tier (not free)
+- Test tier setting: Set user's subscriptionTier to "pro" via `/api/test/update-user` with `{"subscriptionTier": "pro"}`, verify rate limits reflect pro tier ($10/day, $50/week, $150/month instead of free tier)
 
 ### Category 7: Payment UI
 - Set yourself to be getting rate limited on the Free plan
