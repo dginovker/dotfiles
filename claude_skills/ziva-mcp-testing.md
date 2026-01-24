@@ -167,6 +167,24 @@ curl -X POST http://localhost:3000/api/test/update-user \
 
 The tier change takes effect immediately for the authenticated user. Use this to test rate limit UI, countdown timers, tier badges, and upgrade flows.
 
+### Setting User Tier for Testing
+
+When testing rate limit behavior, you can change the authenticated user's subscription tier using the `/api/test/update-user` endpoint:
+
+```bash
+curl -X POST http://localhost:3000/api/test/update-user \
+  -H "Content-Type: application/json" \
+  -d '{"subscriptionTier": "pro"}'
+```
+
+**Valid tier values:**
+- `free`: $1/day, $5/week, $15/month
+- `basic`: $4/day, $20/week, $60/month
+- `pro`: $10/day, $50/week, $150/month
+- `test`: $0.02/day, $0.10/week, $0.30/month (for automated testing)
+
+The tier change takes effect immediately for the authenticated user. Use this to test rate limit UI, countdown timers, tier badges, and upgrade flows.
+
 ### 1. Check Plugin Readiness
 
 ```javascript
