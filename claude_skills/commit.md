@@ -11,6 +11,5 @@ description: Create a commit using dginovker's commit message style and push
    - **Before pushing to staging**, check that staging has all commits from main:
      - Run `git fetch origin main staging`
      - Run `git log origin/staging..origin/main --oneline` to find commits on main not on staging
-     - If there are any, warn the user and ask if they want to sync main→staging first
-   - For non-Ziva repos, push to the current branch as normal
+     - If there are any, pull them onto the staging branch first
 5. Push to the target branch. If the remote branch was updated, rebase and push again.
