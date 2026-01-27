@@ -87,6 +87,7 @@ Each category agent should:
 - Create new chat clears messages
 - Long conversation handling (10+ messages)
 - Thinking step after tool call: Ask agent to call a tool, verify text response appears after the tool result (not just tool card)
+- Chat title generation: Send a long first message, verify the chat title in the header is shorter than the original message and displayed in sans-serif font (not monospace)
 
 ### Category 4: Tool Calling
 - Query tool: Call `get_scene_tree`, verify response structure is valid
