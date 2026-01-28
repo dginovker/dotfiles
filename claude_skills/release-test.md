@@ -111,6 +111,7 @@ Each category agent should:
 - Countdown timer works when rate limited
 - Test tier setting: Set user's subscriptionTier to "pro" via `/api/test/update-user` with `{"subscriptionTier": "pro"}`, verify rate limits reflect pro tier ($10/day, $50/week, $150/month instead of free tier)
 - **Credits system removed**: Verify no "credits" references in UI or API responses (credits were replaced by USD-based rate limiting)
+- **Tier names updated**: Verify free tier displays as "Hobby" (not "Free") in tier badges and UI elements
 
 ### Category 7: Payment UI
 - Set yourself to be getting rate limited on the Free plan
