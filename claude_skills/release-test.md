@@ -158,6 +158,11 @@ Each category agent should:
 - Binary has correct architecture (x86-64 for x64, aarch64 for arm64)
 - Release zip creation works via `make_zip.sh linux_x86_64`
 
+### Category 13: Admin Panel
+- Run Playwright admin tests: `cd apps/web && pnpm exec playwright test admin.spec.ts`
+- Verify all tests pass
+- Report failures in standard category JSON format
+
 ## Failure Handling Protocol
 
 When a test fails:
