@@ -37,9 +37,6 @@ Spawn MULTIPLE Task agents with `subagent_type=Explore` in PARALLEL:
 **Agent 4 - apps/ dead code:**
 > "Analyze apps/ for unused exports, unreferenced components, dead feature flags, commented-out code blocks, or modules that nothing imports. Return specific candidates with evidence."
 
-**Agent 5 - C++ compiler warnings** (general-purpose)
-> "Run `cd gdext && rm -rf build && ./dev.sh` to compile the C++ extension. Parse the compilation output for warnings (unused variables, unused parameters, deprecated functions, uninitialized values, dead code, etc.). For each warning, extract the file path, line number, and explanation. Return specific slop candidates with evidence, formatted like the other agents."
-
 ## Phase 3: Select Target and Create Test Plan
 
 Review all agent findings. Select ONE target based on:
