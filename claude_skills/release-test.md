@@ -162,8 +162,8 @@ Each category agent should:
 
 When a test fails:
 
-1. **Retry immediately** - check for transient failures
-2. **Try alternate approach** - different timing, different verification method
+1. **Try again** - Tests can fail for transient issues. 
+2. **Try a different approach** - Brainstorm if you executed the test incorrectly, or if you can do it better
 3. **Categorize the failure**:
    - **Transient**: Timing issue, passed on retry
    - **Environment**: Setup problem, port conflict, missing dependency
@@ -171,45 +171,10 @@ When a test fails:
 4. **Collect diagnostics**: Check logs in `/tmp/ziva-logs/`, query state via test API
 5. **Document and continue** - do NOT stop the suite on failure
 
-## Testability Feedback Mechanism
+When a test cannot be completed:
 
-When a test struggles to verify something effectively:
-
-1. Mark the result as `"status": "TESTABILITY_ISSUE"`
-2. Document what couldn't be verified and why
-3. Spawn a Task subagent to investigate the Ziva codebase and suggest 1-2 concrete improvements
-4. Include suggestions in the final report
-
-Examples of testability issues:
-- Cannot observe internal state
-- No API access to verify UI-only behavior
-- Timing issues making verification flaky
-- State resets before verification possible
-
-## TESTABILITY_ISSUE Whitelist
-
-Only these 4 scenarios may be marked as TESTABILITY_ISSUE:
-
-1. **Stripe iframe interaction** - Cross-origin security prevents automation of Stripe payment forms
-2. **Bridge disconnect UI verification** - Requires killing processes which disrupts the test environment
-3. **Server restart recovery** - Cannot test through the API being killed
-4. **Visual-only tests with no corresponding state field** - UI elements with no programmatic verification method
-
-Any TESTABILITY_ISSUE outside this whitelist will be challenged by the orchestrator.
-
-### Orchestrator TESTABILITY_ISSUE Validation
-
-When a category agent returns any test with status `TESTABILITY_ISSUE`:
-
-1. **Check whitelist**: If it matches (Stripe iframe, bridge disconnect, server restart, visual-only), accept it
-2. **Verify endpoint exists**: Call `GET /` to list endpoints
-3. **If endpoint exists**: Re-run that test with: "Endpoint [X] exists. Call it and report pass/fail."
-4. **If missing**: Accept and log as gap
-
-Reject TESTABILITY_ISSUE for:
-- "Auth failed so I didn't try"
-- "Endpoint might not work"
-- "Wasn't sure how to verify"
+* **Make it completable** - All of these tests were both testable, and passed in the last release. If the testing isn't working/if the tools are missing to run the test, spawn a subagent to brainstorm what Ziva code can be added/modified to make it testable, and then spawn a subagent to implement any changes needed to make it testable. Finally, run the test again.
+* **Your job is to find out if the feature works** - As the orchestrator, you don't have to do the hard work of making something testable. Delegate that to subagents, work with your subagents and help the subagents make decisions, but be firm that each test must be run to determine if we're safe to ship. You must be very ashamed if you ever return to the user saying you couldn't get your subagents to test something.
 
 ## Results Format
 

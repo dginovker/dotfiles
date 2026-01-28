@@ -75,6 +75,30 @@ ws.on('message', (data) => {
 });
 ```
 
+### Request Format
+
+**CRITICAL: Body must be a JSON STRING, not an object.**
+
+```javascript
+// CORRECT - body is JSON.stringify'd
+ws.send(JSON.stringify({
+  id: '1',
+  path: '/send-message',
+  method: 'POST',
+  body: JSON.stringify({ message: "Hello world" })  // <-- JSON.stringify the body!
+}));
+
+// WRONG - body as object causes "[object Object]" parse error
+ws.send(JSON.stringify({
+  id: '1',
+  path: '/send-message',
+  method: 'POST',
+  body: { message: "Hello world" }  // <-- This will FAIL!
+}));
+```
+
+**Why:** The test API server receives the outer JSON, then parses `body` as JSON again internally via `JSON.parse(body)`. If you pass an object, it becomes `"[object Object]"` which is not valid JSON.
+
 **Reference Implementation:** See `apps/plugin-app/test-api-validation.cjs` for a complete working example.
 
 ## Available Endpoints
@@ -113,43 +137,17 @@ All tool calls return:
 }
 ```
 
-## Available Tools
+## Available Ziva Tools
 
-**Complete list in:** `gdext/src/tools/ToolManagerZiva.cpp`
-
-### Query Tools (15)
-- `get_filesystem_tree` - Get project file structure
-- `get_godot_errors` - Get errors/logs from Godot output
-- `get_input_map` - Get input action mappings
-- `get_open_scripts` - List open script editors
-- `get_project_info` - Get project metadata
-- `get_scene_file_content` - Read .tscn file contents
-- `get_scene_tree` - Get current scene node hierarchy
-- `get_tilemap_state` - Get tilemap tile data
-- `get_tileset_info` - Get tileset configuration
-- `grep` - Search in project files
-- `project_path_to_uid` - Convert path to UID
-- `search_files` - Find files by pattern
-- `take_screenshot` - Capture editor window
-- `uid_to_project_path` - Convert UID to path
-- `view_script` - Read script file contents
-
-### Action Tools (19)
-- `add_node`, `delete_node`, `duplicate_node`, `move_node` - Node manipulation
-- `add_resource`, `add_scene`, `add_to_group`, `remove_from_group` - Resource/group management
-- `attach_script`, `create_script`, `edit_file` - Script operations
-- `create_scene`, `open_scene` - Scene management
-- `clear_output_logs` - Clear Godot output logs
-- `configure_tileset_atlas` - Configure tileset atlas
-- `erase_tile`, `erase_tiles`, `set_tile`, `set_tiles` - Tilemap editing
-- `set_anchor_preset`, `set_anchor_values` - UI anchors
-- `stop_running_scene` - Stop running game scene
-- `update_property` - Modify node property
-- `rm` - Remove file from project
+View `gdext/src/tools/ToolManagerZiva.cpp` for a list of tools Ziva can call
 
 ## Testing Workflow
 
-> **Tip:** Before running chat/messaging tests, call `POST /reset-usage` to clear rate limit usage for the current user. This prevents tests from being blocked by daily limits.
+Tip: Before running chat/messaging tests, call `POST /reset-usage` to clear rate limit usage for the current user. This prevents tests from being blocked by daily limits.
+
+### 0. Available endpoints
+
+See `apps/plugin-app/src/lib/test-api.ts` for the endpoints you can leverage for testing. Note that you can and SHOULD modify or add new endpoints to help with testing.
 
 ### 1. Check Plugin Readiness
 
@@ -160,7 +158,7 @@ ws.send(JSON.stringify({ id: '1', path: '/ready', method: 'GET' }));
 
 ### 2. Taking Screenshots
 
-**IMPORTANT**: Use the `/screenshot` endpoint to capture the entire Godot editor window.
+Use the `/screenshot` endpoint to capture the entire Godot editor window.
 
 ```javascript
 // Take a screenshot of the editor
@@ -277,7 +275,7 @@ ws.send(JSON.stringify({
 
 ## Cleanup Between Tests
 
-**CRITICAL**: Always clean state between test iterations:
+Always clean state between test iterations:
 
 ```bash
 # Kill processes you started (be specific, don't kill all instances)
@@ -311,10 +309,12 @@ git checkout project/
 - Rebuild with `cd gdext && ./dev.sh`
 - Check for C++ compile errors
 
+## Expanding Testing
+- Add w
+
 ## Important Notes
 
-- Test API is **only available in development mode** (not production builds)
+- Test API is only available in development mode (not production builds)
 - Never commit to git unless explicitly asked
-- When killing processes, be specific - don't kill all Godot/Node instances
 - All bridge method definitions: `apps/plugin-app/src/lib/bridge/schemas.ts`
 - All tool implementations: `gdext/src/tools/` (actions/ and queries/ subdirectories)

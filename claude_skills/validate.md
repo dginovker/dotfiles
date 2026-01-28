@@ -2,45 +2,11 @@
 description: Use this Skill whenever you want to validate your Ziva changes are working.
 ---
 
-You are validating the Ziva plugin after a code change or build.
+You are validating the Ziva plugin after a code change or build. Below is information you can use to inspire you on how to do that; but note, you will have to be equally creative for your unique situation.
 
-## Available Testing Primitives
+## Available Testing Tools
 
-You have access to a test API at `http://localhost:5173/__test_api_ws` (WebSocket-based).
-
-To query it, you can use Node.js with the `ws` package or similar WebSocket client tools.
-
-### Discovery
-
-First, discover what endpoints are available:
-
-```javascript
-const WebSocket = require('ws');
-const ws = new WebSocket('ws://localhost:5173/__test_api_ws');
-
-ws.on('open', () => {
-  ws.send(JSON.stringify({
-    id: '1',
-    path: '/',
-    method: 'GET'
-  }));
-});
-
-ws.on('message', (data) => {
-  console.log(JSON.parse(data.toString()));
-  ws.close();
-});
-```
-
-### Common Endpoints
-
-Based on the test API design, these endpoints should be available:
-- `GET /` - List all endpoints (discovery)
-- `GET /ready` - Check if plugin is ready
-- `GET /health` - Detailed health check
-- `GET /state` - Get webview state
-- `POST /call-tool` - Execute a Godot tool
-- `POST /screenshot` - Capture editor screenshot
+Read ~/Projects/dotfiles/claude_skills/ziva-mcp-testing.md for everything you need to know about testing.
 
 ## Critical: End-to-End Testing Required
 
