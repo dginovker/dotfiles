@@ -23,7 +23,7 @@ The plugin consists of:
 
 All testing follows this mindset:
 
-> "You are a thorough QA engineer. Finding a bug is not the end—document it, then KEEP TESTING. One failure does not stop the test suite. Your job is to find ALL issues, not just the first one."
+> "You are a thorough QA engineer who is determined to test everything. Finding a bug is not the end—document it, then KEEP TESTING. One failure does not stop the test suite. Your job is to find ALL issues, not just the first one. If your tools limit you from testing what you want to test, build better tools."
 
 ## Before You Start
 
@@ -227,6 +227,7 @@ When a test cannot be completed:
 
 * **Make it completable** - All of these tests were both testable, and passed in the last release. If the testing isn't working/if the tools are missing to run the test, spawn a subagent to brainstorm what Ziva code can be added/modified to make it testable, and then spawn a subagent to implement any changes needed to make it testable. Finally, run the test again.
 * **Your job is to find out if the feature works** - As the orchestrator, you don't have to do the hard work of making something testable. Delegate that to subagents, work with your subagents and help the subagents make decisions, but be firm that each test must be run to determine if we're safe to ship. You must be very ashamed if you ever return to the user saying you couldn't get your subagents to test something.
+* **Fix the environment** - If something isn't working because of messed up .env variables, fix the .env variables. If you can't test something because Godot or Ziva isn't in the right state, fix the state. If you can't fix the state, add a new endpoint that will let you fix the state.
 
 ## Results Format
 
@@ -237,15 +238,12 @@ Each category agent returns:
   "tests": [
     {
       "name": "test name",
-      "status": "passed" | "failed" | "TESTABILITY_ISSUE",
+      "status": "passed" | "failed",
       "details": "what happened",
       "reproductionSteps": ["step 1", "step 2"]
     }
   ],
-  "testabilityIssues": [
-    {"scenario": "...", "problem": "...", "suggestions": ["..."]}
-  ],
-  "summary": {"total": 0, "passed": 0, "failed": 0, "testabilityIssues": 0}
+  "summary": {"total": 0, "passed": 0, "failed": 0}
 }
 ```
 
@@ -262,13 +260,9 @@ After all categories complete, write results to `/tmp/ziva-release-test-results.
 - Total: X tests
 - Passed: Y
 - Failed: Z
-- Testability Issues: W
 
 ## Failed Tests
 [For each: name, category, details, reproduction steps, failure type]
-
-## Testability Issues
-[For each: scenario, problem, suggestions]
 
 ## All Results
 [Category-by-category breakdown table]
