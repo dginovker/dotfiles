@@ -111,9 +111,10 @@ Each category agent should:
 - Progress bars show usage
 - Tier badge shows current plan (uses subscriptionTier, NOT rateLimitTier)
 - Countdown timer works when rate limited
-- Test tier setting: Set user's subscriptionTier to "pro" via `/api/test/update-user` with `{"subscriptionTier": "pro"}`, verify rate limits reflect pro tier ($10/day, $50/week, $150/month instead of free tier)
+- Test tier setting: Set user's subscriptionTier to "pro" via `/api/test/update-user` with `{"subscriptionTier": "pro"}`, verify rate limits reflect pro tier ($10/day, $50/week, $150/month instead of hobby tier)
 - **Credits system removed**: Verify no "credits" references in UI or API responses (credits were replaced by USD-based rate limiting)
-- **Tier names updated**: Verify free tier displays as "Hobby" (not "Free") in tier badges and UI elements
+- **Tier names updated**: Verify hobby tier displays as "Hobby" (not "Free") in tier badges and UI elements
+- **Database tier migration**: Verify new users are created with `subscriptionTier = 'hobby'` by default (not 'free')
 
 ### Category 7: Payment UI
 - Set yourself to be getting rate limited on the Free plan
