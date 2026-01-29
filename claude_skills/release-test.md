@@ -167,6 +167,49 @@ Each category agent should:
 - Verify all tests pass
 - Report failures in standard category JSON format
 
+### Category 14: Prompt Caching
+**PREREQUISITE**: Must be authenticated (see Category 3 authentication steps).
+
+Test prompt caching functionality for one model per provider:
+- Claude Opus 4.5 (Anthropic)
+- Gemini 3 Flash (Google)
+- GPT 5.2 (OpenAI)
+- GLM 4.6 (GLM)
+- Grok Code Fast 1 (xAI)
+
+**Test Procedure** (for each model):
+1. Select the model in the UI (use `/click-element` to interact with model selector dropdown)
+2. Send first message with substantial context via `/send-message` (e.g., "Analyze this code: [paste 500+ line example]")
+3. Query `/last-usage` to get baseline token usage and costs
+4. Send second message with same context via `/send-message` (e.g., "Now add error handling to that code")
+5. Query `/last-usage` again to compare caching metrics
+
+**Validation Criteria**:
+- Second message shows `cachedInputTokens > 0` in `/last-usage` response
+- Cache hit rate > 50% (cachedInputTokens / totalInputTokens)
+- Cost decreased from first to second message
+- Response quality unchanged (agent still has full context)
+
+**Failure Handling**:
+- If `cachedInputTokens === 0` on second message: Report as FAILED for models claiming cache support
+- If cache hit rate < 50%: Report as FAILED with details about what percentage was achieved
+- If cost did not decrease: Report as FAILED with both message costs
+- If provider doesn't support caching: Mark as TESTABILITY_ISSUE with note about provider limitation
+
+**Results Format**:
+```json
+{
+  "category": "Prompt Caching",
+  "tests": [
+    {
+      "name": "Claude Opus 4.5 caching",
+      "status": "passed",
+      "details": "First message: 2000 input tokens, $0.015. Second message: 1800 cached + 200 new tokens, $0.003. Cache hit rate: 90%"
+    }
+  ]
+}
+```
+
 ## Failure Handling Protocol
 
 When a test fails:
