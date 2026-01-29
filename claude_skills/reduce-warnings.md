@@ -13,7 +13,7 @@ You are performing an incremental cleanup of warnings in the gdext/ codebase. Yo
 
 ## Phase 1: Make ./run.sh rebuild so that warnings can be found
 
-<todo>
+Delete the gdext/build directory so that ./run.sh does a full rebuild
 
 ## Phase 2: Build and store logs
 
