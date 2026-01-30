@@ -211,6 +211,46 @@ Test prompt caching functionality for one model per provider:
 }
 ```
 
+### Category 15: Documentation Tool
+Verify Godot documentation files exist and the `get_class_docs` tool works correctly.
+
+**Doc Files Check**:
+- For each supported version (4.2, 4.3, 4.4, 4.5, 4.6), verify the JSON file exists on the server:
+  - `curl -sI https://ziva.sh/docs/godot-{version}.json.gz` returns HTTP 200
+  - If any version returns 404, mark as FAILED with missing version list
+
+**Tool Functionality**:
+- Call `get_class_docs` with `class_name="Node2D"`:
+  - Response should contain "apply_scale" (a known method)
+  - Response should contain "extends CanvasItem" (inheritance info)
+- Call `get_class_docs` with `class_name="Node2D"` and `search="position"`:
+  - Response should be filtered to position-related members only
+  - Response should contain "global_position" and "position" properties
+
+**Results Format**:
+```json
+{
+  "category": "Documentation Tool",
+  "tests": [
+    {
+      "name": "Doc files HTTP check",
+      "status": "passed",
+      "details": "All 5 versions (4.2, 4.3, 4.4, 4.5, 4.6) return HTTP 200"
+    },
+    {
+      "name": "get_class_docs basic lookup",
+      "status": "passed",
+      "details": "Node2D docs returned with expected content (apply_scale method, CanvasItem inheritance)"
+    },
+    {
+      "name": "get_class_docs fuzzy search",
+      "status": "passed",
+      "details": "Search for 'position' returned 2 filtered results (global_position, position)"
+    }
+  ]
+}
+```
+
 ## Failure Handling Protocol
 
 When a test fails:
