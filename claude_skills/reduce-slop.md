@@ -180,3 +180,5 @@ If ANY verification step fails:
 ✗ Error handling at system boundaries, fail-fast code (i.e. invarients), code that prevents silent failure
 ✗ Code that looks unused but is called via reflection/dynamic dispatch
 ✗ Platform-specific implementations (even if only one platform currently)
+✗ Logs
+

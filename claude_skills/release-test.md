@@ -117,14 +117,52 @@ Each category agent should:
 - **Database tier migration**: Verify new users are created with `subscriptionTier = 'hobby'` by default (not 'free')
 
 ### Category 7: Payment UI
-- Set yourself to be getting rate limited on the Free plan
+- Set yourself to be getting rate limited on the Hobby plan
 - Upgrade button is clickable
 - Plan comparison displays correctly
-- Stripe embed loads
 - Back navigation works
-- **Stripe checkout flow**: Use `/simulate-checkout-success` to trigger success UI (Stripe iframe cannot be automated via test API)
+- **Stripe checkout flow (UI simulation)**: Use `/simulate-checkout-success` to trigger success UI for quick validation
 - Verify "Subscription Activated!" message appears
 - Verify dialog closes after clicking Continue
+
+### Category 7B: Stripe Payment Flow (E2E)
+**PREREQUISITE**: This category tests real Stripe checkout. Requires:
+1. Stripe CLI running: `stripe listen --forward-to localhost:3000/api/stripe-webhook`
+2. STRIPE_WEBHOOK_SECRET in .env.local matches the webhook secret from Stripe CLI output
+
+Run the Playwright E2E tests for hosted checkout:
+```bash
+cd apps/web && pnpm exec playwright test hosted-checkout.spec.ts --reporter=line
+```
+
+**Tests verify:**
+- **Hobby → Basic (monthly)**: Complete checkout with test card 4242424242424242, verify DB tier=basic
+- **Hobby → Pro (monthly)**: Complete checkout, verify DB tier=pro
+- **Hobby → Basic (annual)**: Complete checkout with annual billing, verify subscriptionInterval=year
+- **Basic → Pro upgrade**: Existing Basic subscriber can upgrade to Pro
+- **Already subscribed rejection**: Basic user redirected when trying to buy Basic again
+- **Pro user rejection**: Pro user redirected when trying to re-subscribe
+- **Unauthenticated redirect**: Requires login before checkout
+- **Invalid tier rejection**: Invalid tier parameter shows error
+- **Success page UI**: Shows "thank you" / "success" message after checkout
+- **Account page update**: Tier badge updates after checkout
+
+**If tests fail:**
+1. Check Stripe CLI is running and forwarding webhooks
+2. Verify STRIPE_WEBHOOK_SECRET matches CLI output (shown at startup: "Your webhook signing secret is whsec_...")
+3. Check server logs for webhook signature errors
+4. Verify test card is accepted (4242424242424242, exp: 12/30, CVC: 123, ZIP: 12345)
+
+**Results Format:**
+```json
+{
+  "category": "Stripe Payment Flow",
+  "tests": [
+    {"name": "Hobby → Basic (monthly)", "status": "passed", "details": "Checkout completed, webhook processed, tier updated to basic"},
+    {"name": "Basic → Pro upgrade", "status": "passed", "details": "Upgrade flow completed, tier changed from basic to pro"}
+  ]
+}
+```
 
 ### Category 8: UI Validation
 - Chat input accepts text and submits

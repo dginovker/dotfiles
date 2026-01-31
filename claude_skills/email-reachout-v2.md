@@ -254,3 +254,5 @@ When presenting an email, include:
 3. **Subject line options**: 2-3 options
 4. **Email body**: The complete email
 5. **Email address**: Best contact found
+
+After finishing showing the user the email, save a copy of it in /tmp/ so it can be easily copied.
