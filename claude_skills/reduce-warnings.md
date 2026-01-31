@@ -11,13 +11,28 @@ You are performing an incremental cleanup of warnings in the gdext/ codebase. Yo
 1. Warning count is reduced
 2. ALL tests in your test plan PASS via `/ziva-mcp-testing`
 
-## Phase 1: Make ./run.sh rebuild so that warnings can be found
+## Phase 1: Build and capture warnings to a file
 
-Delete the gdext/build directory so that ./run.sh does a full rebuild
+The warnings appear during the cmake build step. To capture them:
 
-## Phase 2: Build and store logs
+```bash
+cd /home/w/Projects/ziva/gdext
+rm -rf build  # Force full rebuild
+cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=./../godot-project/addons -B build -S . 2>&1 | tee /tmp/cmake-configure.log
+cmake --build build -- -j10 2>&1 | tee /tmp/cmake-build.log
+```
 
-Now when you execute ./run.sh, you will see the gdext/ warning logs.
+**CRITICAL**: The warnings are in `/tmp/cmake-build.log`. After the build completes, read that file to find warnings:
+
+```bash
+grep -n "warning:" /tmp/cmake-build.log
+```
+
+This will show you all compiler warnings with line numbers in the log file.
+
+## Phase 2: Analyze the warnings
+
+Read `/tmp/cmake-build.log` using the Read tool to see the full context of each warning. Filter out third-party warnings (from `thirdparty/` directory) as those are not our code to fix.
 
 ## Phase 3: Select Target and Create Test Plan
 
