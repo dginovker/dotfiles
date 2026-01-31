@@ -236,7 +236,6 @@ When presenting an email, include:
 
 ## Checklist Before Finalizing
 
-- [ ] Under 125 words?
 - [ ] References something SPECIFIC about their work?
 - [ ] No hedging language ("maybe," "might," "just," "I think")?
 - [ ] Includes one proof point?
