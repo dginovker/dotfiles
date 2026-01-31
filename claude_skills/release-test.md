@@ -153,6 +153,7 @@ Each category agent should:
 - Large file in project
 - Empty project handling
 - Scrolling in chat: Scroll up/down in a long chat conversation, verify scrollbar is responsive and doesn't freeze
+- Concurrent database operations: Call `/reproduce-sqlite-lock` endpoint, verify `runsWithErrors === 0` (tests SQLite WAL mode handles concurrent createChat + upsertMessage)
 
 ### Category 12: Build Verification
 - Docker daemon is running and accessible
