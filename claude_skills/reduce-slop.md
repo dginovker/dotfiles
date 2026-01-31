@@ -38,7 +38,10 @@ Spawn MULTIPLE Task agents with `subagent_type=Explore` in PARALLEL:
 > "Analyze apps/ for unused exports, unreferenced components, dead feature flags, commented-out code blocks, or modules that nothing imports. Return specific candidates with evidence."
 
 **Agent 5 - silently swallowed errors:**
-> "Search for error handling that silently discards failures. Look for: empty catch blocks, .catch(() => {}) or .catch(() => false), catch blocks that only log without rethrowing, underscore catch variables like catch(_error), catch blocks returning default values without logging the error, ignored return values from fallible operations like DirAccess::remove_absolute() or sqlite3_bind_* that should be throwing, and functions returning empty string/array/null on error without distinguishing from legitimate empty results. Return specific candidates with evidence."
+> "Search for error handling that silently discards failures: empty catch blocks, ignored return values from fallible operations, etc. Return specific candidates with evidence."
+
+**Agent 6 - multiple sources of truth:**
+> "Search for data defined in multiple places that could diverge: duplicate constants, interfaces, utility functions, etc. Return specific candidates with evidence."
 
 ## Phase 3: Select Target and Create Test Plan
 
