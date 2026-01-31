@@ -41,6 +41,12 @@ All testing follows this mindset:
 
 Spawn Task subagents **linearly** (one at a time) for each test category below.
 
+**CRITICAL: Category 1 (Startup & Initialization) is a BLOCKER**
+- Category 1 MUST fully pass before running any other categories
+- If `/ready` returns `ready: false`, check the `initError` field to see why
+- If `initError` is present, FIX THE ISSUE before proceeding with other tests
+- DO NOT run Categories 2-15 if the plugin is not initialized
+
 Each category agent should:
 1. Invoke `/ziva-mcp-testing` to understand the test API
 2. Run all tests in its category
@@ -56,11 +62,20 @@ Each category agent should:
 - Verify startup script has new path: `grep -q "cd ~/Projects/ziva" ~/startup_update.sh`
 
 ### Category 1: Startup & Initialization
-- Server responds to health check
-- Godot launches without errors
+**BLOCKER CATEGORY - Must pass before proceeding**
+
+Test steps:
+- Server responds to health check (http://localhost:3000 and http://localhost:5173)
+- Godot launches without errors (check /tmp/ziva-logs/godot.log)
 - Plugin initializes (Ziva panel visible)
 - Bridge connects (webview to C++)
-- Test API becomes ready
+- Test API becomes ready (call `GET /ready`, verify `ready: true` and `initError: null`)
+
+**If `/ready` returns `ready: false`:**
+1. Check the `initError` field in the response - it contains the actual error message
+2. Check `/health` endpoint for detailed status of each component
+3. Fix the initialization issue before proceeding
+4. DO NOT run other test categories until this is resolved
 
 ### Category 2: Authentication
 - Check initial login state
@@ -207,6 +222,7 @@ cd apps/web && pnpm exec playwright test hosted-checkout.spec.ts --reporter=line
 - Run Playwright admin tests: `cd apps/web && pnpm exec playwright test admin.spec.ts`
 - Verify all tests pass
 - Report failures in standard category JSON format
+- Model spending cards: Navigate to `/admin` dashboard (requires admin role), verify 4 spending cards exist with titles containing "Spent" (Last 24h, Last 7d, Last 30d, All Time), each showing a USD value (e.g., "$0.00" or "$12.45")
 
 ### Category 14: Prompt Caching
 **PREREQUISITE**: Must be authenticated (see Category 3 authentication steps).
