@@ -222,7 +222,7 @@ cd apps/web && pnpm exec playwright test hosted-checkout.spec.ts --reporter=line
 - Run Playwright admin tests: `cd apps/web && pnpm exec playwright test admin.spec.ts`
 - Verify all tests pass
 - Report failures in standard category JSON format
-- Model spending cards: Navigate to `/admin` dashboard (requires admin role), verify 4 spending cards exist with titles containing "Spent" (Last 24h, Last 7d, Last 30d, All Time), each showing a USD value (e.g., "$0.00" or "$12.45")
+- Model spending chart: Navigate to `/admin` dashboard (requires admin role), verify spending chart exists with 3 period toggle buttons (Day, Week, Month), click each button to verify chart updates without errors
 
 ### Category 14: Prompt Caching
 **PREREQUISITE**: Must be authenticated (see Category 3 authentication steps).
