@@ -248,6 +248,7 @@ cd apps/web && pnpm exec playwright test hosted-checkout.spec.ts --reporter=line
 - Linux x64 compilation completes successfully
 - Linux ARM64 Docker image builds without errors using buildx
 - Binary has correct architecture (x86-64 for x64, aarch64 for arm64)
+- webkit2gtk-4.1 linkage: Run `ldd` on Linux binary, verify links against `libwebkit2gtk-4.1` (not 4.0) for Ubuntu 25+ compatibility
 - Release zip creation works via `make_zip.sh linux_x86_64`
 
 ### Category 13: Admin Panel
