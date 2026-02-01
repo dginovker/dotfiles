@@ -192,6 +192,17 @@ cd apps/web && pnpm exec playwright test hosted-checkout.spec.ts --reporter=line
 - AGENTS.md content available
 - Context toggles affect injection
 
+### Category 16: Context Usage Widget
+- Widget displays in prompt footer: Click the context usage icon (svg with aria-label="Context usage"), verify dialog opens with percentage and progress bar
+- Breakdown reflects context files: Open a script in Godot, call `/get-context-usage`, verify `breakdown.openScripts > 0`
+- Tool calls tracked: Send a message that triggers tools, call `/get-context-usage`, verify `toolCallDetails` array has entries with `tokens > 0` and `count > 0`
+- Color coding: Verify percentage color changes at thresholds (green <70%, yellow 70-95%, red >95%) - use `/get-context-usage` to check percentage and take screenshot to verify color
+- Cache stats displayed: Verify the dialog shows "Cache" row with format "X / Y (Z%)" showing cached vs total tokens
+- Estimated savings: Verify "Est. savings" row shows a dollar amount (not colored green)
+- Expandable sections: Click "Open scripts" row in the dialog, verify it expands to show individual script files sorted by token count (largest first)
+- Settings link: Verify clicking the settings gear icon in the dialog footer opens Settings dialog at the Context tab
+- Context settings tab: In Settings, verify the Context tab (Layers icon) shows auto-add toggles for scripts, scenes, and AGENTS.md
+
 ### Category 10: Error Handling
 - Invalid tool call returns error gracefully
 - Network error handling
