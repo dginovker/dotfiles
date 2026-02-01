@@ -144,6 +144,27 @@ Test steps:
 **PREREQUISITE**: This category tests real Stripe checkout. Requires:
 1. Stripe CLI running: `stripe listen --forward-to localhost:3000/api/stripe-webhook`
 2. STRIPE_WEBHOOK_SECRET in .env.local matches the webhook secret from Stripe CLI output
+3. **Stripe test mode keys**: Before running tests, check if `.env` has live keys and swap to test keys:
+   ```bash
+   # Check if using live key
+   if grep -q "STRIPE_SECRET_KEY=\"sk_live_" ~/Projects/ziva/.env; then
+     # Fetch test keys from Stripe CLI (requires prior `stripe login`)
+     TEST_SECRET=$(stripe config --list | grep test_mode_api_key | cut -d"'" -f2)
+     TEST_PUB=$(stripe config --list | grep test_mode_pub_key | cut -d"'" -f2)
+
+     if [ -n "$TEST_SECRET" ] && [ -n "$TEST_PUB" ]; then
+       # Backup and replace keys in .env
+       sed -i 's/STRIPE_SECRET_KEY="sk_live_[^"]*"/STRIPE_SECRET_KEY="'"$TEST_SECRET"'"/' ~/Projects/ziva/.env
+       sed -i 's/STRIPE_PUBLISHABLE_KEY="pk_live_[^"]*"/STRIPE_PUBLISHABLE_KEY="'"$TEST_PUB"'"/' ~/Projects/ziva/.env
+       echo "Swapped to Stripe test mode keys"
+       # Restart the server to pick up new keys
+     else
+       echo "ERROR: Stripe CLI not configured. Run 'stripe login' first."
+       exit 1
+     fi
+   fi
+   ```
+   After tests complete, restore live keys if needed (or leave test keys for dev environment).
 
 Run the Playwright E2E tests for hosted checkout:
 ```bash
