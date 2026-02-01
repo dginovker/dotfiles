@@ -22,3 +22,7 @@ description: Create a commit using dginovker's commit message style and push
      - Then fast-forward main: `git push origin staging:main`
      - This ensures main is always a subset of staging's history
 5. Push to the target branch. If the remote branch was updated, rebase and push again.
+
+Rules:
+* NEVER force push
+* Do not coauthor with claude code
