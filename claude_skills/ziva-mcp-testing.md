@@ -1,6 +1,6 @@
 ---
 name: ziva-mcp-testing
-description: Test changes to the Ziva Godot plugin by interacting with a running Godot instance via the MCP server
+description: Test changes to the Ziva Godot plugin by interacting with a running Godot instance via the HTTP test API
 ---
 
 # Ziva Testing Skill
@@ -9,7 +9,7 @@ Use this skill when you need to test changes to the Ziva Godot plugin by interac
 
 ## Overview
 
-The Ziva plugin exposes a WebSocket-based test API during development that allows Claude Code to:
+The Ziva plugin exposes an HTTP-based test API during development that allows Claude Code to:
 - Execute Godot tools directly
 - Check plugin readiness and status
 - Query webview state and bridge connectivity
@@ -18,20 +18,20 @@ The Ziva plugin exposes a WebSocket-based test API during development that allow
 ## Architecture
 
 ```
-Claude Code ──WebSocket──▶ Vite Dev Server ──▶ React App (plugin-app) ──Bridge──▶ Godot Plugin (C++)
-               (port 5173)    (WebSocket)           (in webview)        (IPC)
+Test Script ──HTTP──▶ Vite Dev Server ──polling──▶ React App (plugin-app) ──Bridge──▶ Godot Plugin (C++)
+              (port 5173)   (HTTP endpoints)         (in webview)            (IPC)
 ```
 
 **Key Components:**
-- **Vite Dev Server**: Runs on port 5173, provides WebSocket endpoint `/__test_api_ws`
-- **plugin-app**: React app running in webview, implements test API handlers
+- **Vite Dev Server**: Runs on port 5173, provides HTTP endpoints at `/__test_api/*`
+- **plugin-app**: React app running in webview, polls for requests and submits responses
 - **Bridge**: IPC communication between webview and C++ plugin (see `apps/plugin-app/src/lib/bridge/schemas.ts`)
 - **Tool Manager**: C++ tool registry with 34 tools (see `gdext/src/tools/ToolManagerZiva.cpp`)
 
 ## Starting the Plugin
 
 ```bash
-cd /home/w/Projects/ziva/gdext
+cd /home/w/Projects/ziva
 ./run.sh
 ```
 
@@ -53,26 +53,47 @@ Logs are written to `/tmp/ziva-logs/`:
 
 View all logs: `tail -f /tmp/ziva-logs/*.log`
 
-## Test API Connection
+## Test API Connection (HTTP)
 
-Connect via WebSocket to the Vite dev server:
+The test API uses HTTP polling instead of WebSocket for reliability with CEF webviews.
+
+### How It Works
+
+1. **Submit request**: POST to `/__test_api/request` with your request payload
+2. **Browser polls**: The browser polls `/__test_api/request` every 100ms for pending requests
+3. **Browser processes**: When found, browser executes the request handler
+4. **Browser responds**: Browser POSTs result to `/__test_api/response`
+5. **Get response**: Poll `/__test_api/response/{id}` until response is available
+
+### Example: Simple Request
 
 ```javascript
-const WebSocket = require('ws');
-const ws = new WebSocket('ws://localhost:5173/__test_api_ws');
+// Helper function to call the test API
+async function callTestApi(path, method = 'GET', body = null) {
+  const id = 'req-' + Date.now();
 
-ws.on('open', () => {
-  ws.send(JSON.stringify({
-    id: 'test-1',
-    path: '/ready',
-    method: 'GET'
-  }));
-});
+  // 1. Submit request
+  await fetch('http://localhost:5173/__test_api/request', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id, path, method, body: body ? JSON.stringify(body) : undefined })
+  });
 
-ws.on('message', (data) => {
-  const response = JSON.parse(data.toString());
-  console.log(response.result);
-});
+  // 2. Poll for response
+  for (let i = 0; i < 50; i++) {
+    await new Promise(r => setTimeout(r, 100));
+    const res = await fetch(`http://localhost:5173/__test_api/response/${id}`);
+    const data = await res.json();
+    if (!data.pending) {
+      return data.result;
+    }
+  }
+  throw new Error('Timeout waiting for response');
+}
+
+// Usage
+const ready = await callTestApi('/ready');
+console.log('Ready:', ready);
 ```
 
 ### Request Format
@@ -81,35 +102,29 @@ ws.on('message', (data) => {
 
 ```javascript
 // CORRECT - body is JSON.stringify'd
-ws.send(JSON.stringify({
+const request = {
   id: '1',
   path: '/send-message',
   method: 'POST',
   body: JSON.stringify({ message: "Hello world" })  // <-- JSON.stringify the body!
-}));
+};
 
 // WRONG - body as object causes "[object Object]" parse error
-ws.send(JSON.stringify({
+const request = {
   id: '1',
   path: '/send-message',
   method: 'POST',
   body: { message: "Hello world" }  // <-- This will FAIL!
-}));
+};
 ```
-
-**Why:** The test API server receives the outer JSON, then parses `body` as JSON again internally via `JSON.parse(body)`. If you pass an object, it becomes `"[object Object]"` which is not valid JSON.
-
-**Reference Implementation:** See `apps/plugin-app/test-api-validation.cjs` for a complete working example.
 
 ## Available Endpoints
 
 **IMPORTANT:** Always discover endpoints dynamically by calling `GET /` first. Do not assume endpoints exist - the API evolves and hardcoded lists get stale.
 
 ```javascript
-// FIRST: Discover all available endpoints
-ws.send(JSON.stringify({ id: 'discover', path: '/', method: 'GET' }));
-
-// Response:
+const endpoints = await callTestApi('/');
+console.log(endpoints);
 // {
 //   endpoints: [
 //     { path: '/ready', description: 'Check if plugin is ready' },
@@ -120,20 +135,15 @@ ws.send(JSON.stringify({ id: 'discover', path: '/', method: 'GET' }));
 // }
 ```
 
-Use the discovery response to determine what endpoints are available before making assumptions.
-
 ### Response Format
 
 All tool calls return:
 ```typescript
 {
-  id: string,  // matches request id
-  result: {
-    success: boolean,
-    type: "text" | "image" | "json",
-    data: any,
-    mimeType?: string
-  }
+  success: boolean,
+  type: "text" | "image" | "json",
+  data: any,
+  mimeType?: string
 }
 ```
 
@@ -160,25 +170,7 @@ curl -X POST http://localhost:3000/api/test/update-user \
 ```
 
 **Valid tier values:**
-- `free`: $1/day, $5/week, $15/month
-- `basic`: $4/day, $20/week, $60/month
-- `pro`: $10/day, $50/week, $150/month
-- `test`: $0.02/day, $0.10/week, $0.30/month (for automated testing)
-
-The tier change takes effect immediately for the authenticated user. Use this to test rate limit UI, countdown timers, tier badges, and upgrade flows.
-
-### Setting User Tier for Testing
-
-When testing rate limit behavior, you can change the authenticated user's subscription tier using the `/api/test/update-user` endpoint:
-
-```bash
-curl -X POST http://localhost:3000/api/test/update-user \
-  -H "Content-Type: application/json" \
-  -d '{"subscriptionTier": "pro"}'
-```
-
-**Valid tier values:**
-- `free`: $1/day, $5/week, $15/month
+- `hobby`: $1/day, $5/week, $15/month
 - `basic`: $4/day, $20/week, $60/month
 - `pro`: $10/day, $50/week, $150/month
 - `test`: $0.02/day, $0.10/week, $0.30/month (for automated testing)
@@ -188,125 +180,44 @@ The tier change takes effect immediately for the authenticated user. Use this to
 ### 1. Check Plugin Readiness
 
 ```javascript
-ws.send(JSON.stringify({ id: '1', path: '/ready', method: 'GET' }));
-// Wait for response: { id: '1', result: { ready: true, checks: [...] } }
+const ready = await callTestApi('/ready');
+// { ready: true, checks: ['app: ok', 'bridge: ok'], initError: null }
 ```
 
 ### 2. Taking Screenshots
 
-Use the `/screenshot` endpoint to capture the entire Godot editor window.
-
 ```javascript
-// Take a screenshot of the editor
-ws.send(JSON.stringify({
-  id: 'screenshot-1',
-  path: '/screenshot',
-  method: 'POST'
-}));
+const screenshot = await callTestApi('/screenshot', 'POST');
+// { result: { success: true, type: 'image', data: '<base64 PNG>' } }
 
-// Response format:
-// {
-//   id: 'screenshot-1',
-//   result: {
-//     result: {
-//       success: true,
-//       type: 'image',
-//       data: '<base64-encoded PNG data>'
-//     }
-//   }
-// }
-
-// Save the screenshot
-ws.on('message', (data) => {
-  const response = JSON.parse(data.toString());
-  if (response.id === 'screenshot-1') {
-    const imageData = response.result.result.data;  // Note the double .result
-    const buffer = Buffer.from(imageData, 'base64');
-    fs.writeFileSync('/tmp/screenshot.png', buffer);
-  }
-});
-```
-
-**Key Points:**
-- The screenshot captures the ENTIRE Godot editor window as it currently appears
-- Image data is returned as base64-encoded PNG in `response.result.result.data`
-- No parameters needed - it always captures the full editor window
-- The underlying tool is `get_editor_screenshot` (can also be called via `/call-tool`)
-- For UI testing, manually interact with the editor first, then take a screenshot
-
-**Example: Complete Screenshot Script**
-```javascript
-const WebSocket = require('ws');
-const fs = require('fs');
-
-const ws = new WebSocket('ws://localhost:5173/__test_api_ws');
-
-ws.on('open', () => {
-  console.log('Taking screenshot...');
-  ws.send(JSON.stringify({
-    id: 'screenshot',
-    path: '/screenshot',
-    method: 'POST'
-  }));
-});
-
-ws.on('message', async (data) => {
-  // Handle Blob data from browser WebSocket
-  let text = data;
-  if (data instanceof Buffer) {
-    text = data.toString('utf8');
-  }
-
-  const response = JSON.parse(text);
-  const output = response.result?.result;
-
-  if (output?.type === 'image' && output.data) {
-    const buffer = Buffer.from(output.data, 'base64');
-    fs.writeFileSync('/tmp/godot-screenshot.png', buffer);
-    console.log(`Screenshot saved: ${buffer.length} bytes`);
-    ws.close();
-  }
-});
+// Save to file
+const buffer = Buffer.from(screenshot.result.data, 'base64');
+require('fs').writeFileSync('/tmp/screenshot.png', buffer);
 ```
 
 ### 3. Execute a Tool
 
 ```javascript
-ws.send(JSON.stringify({
-  id: '2',
-  path: '/call-tool',
-  method: 'POST',
-  body: JSON.stringify({
-    toolName: 'get_scene_tree',
-    toolArgs: {}
-  })
-}));
+const result = await callTestApi('/call-tool', 'POST', {
+  toolName: 'get_scene_tree',
+  toolArgs: {}
+});
 ```
 
 ### 4. Verify Changes
 
 ```javascript
 // Get errors/logs
-ws.send(JSON.stringify({
-  id: '3',
-  path: '/call-tool',
-  method: 'POST',
-  body: JSON.stringify({
-    toolName: 'get_godot_errors',
-    toolArgs: { num_lines: 50 }
-  })
-}));
+const errors = await callTestApi('/call-tool', 'POST', {
+  toolName: 'get_godot_errors',
+  toolArgs: { num_lines: 50 }
+});
 
 // Clear logs before test
-ws.send(JSON.stringify({
-  id: '4',
-  path: '/call-tool',
-  method: 'POST',
-  body: JSON.stringify({
-    toolName: 'clear_output_logs',
-    toolArgs: {}
-  })
-}));
+await callTestApi('/call-tool', 'POST', {
+  toolName: 'clear_output_logs',
+  toolArgs: {}
+});
 ```
 
 ## Cleanup Between Tests
@@ -315,11 +226,11 @@ Always clean state between test iterations:
 
 ```bash
 # Kill processes you started (be specific, don't kill all instances)
-pkill -f "godot.*ziva-agent-plugin"
+pkill -f "godot.*godot-project"
 
 # Reset project state
 cd /home/w/Projects/ziva
-git checkout project/
+git checkout godot-project/
 ```
 
 ## Troubleshooting
@@ -330,8 +241,8 @@ git checkout project/
 - Check logs in `/tmp/ziva-logs/`
 - Check Godot console for errors
 
-### WebSocket Connection Fails
-- Ensure plugin-app is running: `pnpm --filter @repo/plugin-app dev`
+### HTTP Test API Not Responding
+- Verify browser is polling: check for `[TestAPI] Polling started` in Godot logs
 - Check port 5173 is available: `fuser 5173/tcp`
 - Verify in development mode (test API only works in dev)
 
@@ -344,9 +255,6 @@ git checkout project/
 - Verify correct binary is loaded (check timestamps)
 - Rebuild with `cd gdext && ./dev.sh`
 - Check for C++ compile errors
-
-## Expanding Testing
-- Add w
 
 ## Important Notes
 
