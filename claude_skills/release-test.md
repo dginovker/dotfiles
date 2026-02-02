@@ -340,6 +340,43 @@ Verify Godot documentation files exist and the `get_class_docs` tool works corre
 }
 ```
 
+### Category 16: Pixel Art Generation
+**PREREQUISITE**: Must be authenticated and have PIXELLAB_SECRET configured.
+
+**Test 1: Single tile generation**
+1. Create/open scene with TileMapLayer node named "TestLayer"
+2. Send: "Generate a grass ground tile at 16x16 for TestLayer"
+3. Parse tool response for `path` value (format: `res://assets/generated/{name}_{timestamp}.png`)
+4. Verify file on disk:
+   - Convert res:// path to absolute: `~/Projects/ziva/godot-project/assets/generated/...`
+   - Check file exists: `test -f "$ABSOLUTE_PATH"`
+   - Check dimensions with `file` command or imagemagick: `identify -format "%wx%h" "$PATH"` should return `16x16`
+5. Vision validation (optional):
+   - Read file as base64: `base64 -w0 "$PATH"`
+   - Ask Claude: "Does this 16x16 image look like pixel art grass? YES or NO."
+6. PASS if: file exists AND dimensions are 16x16
+
+**Test 2: Multi-tile spritesheet (rate limiting)**
+1. Send: "Generate 4 tiles for TestLayer: grass, dirt, stone, water at 16x16"
+2. Parse tool response - should show `tile_count=4, dimensions=64x16`
+3. Verify NO rate limit errors in response (tests sequential API calls with delay)
+4. Verify file on disk:
+   - Check file exists at returned path
+   - Check dimensions: `64x16` (4 tiles horizontally)
+5. Call `get_tileset_info` on TestLayer - verify 4 atlas tiles configured
+6. PASS if: no rate limit errors AND file exists with correct dimensions AND tileset has 4 tiles
+
+**Test 3: Level structure with generated tiles**
+1. Use tiles from Test 2
+2. Send: "Draw ground from x=0 to x=20, add gaps at x=8-9 and x=15-16, add platform at y=7 from x=4-7"
+3. Call `validate_tilemap_structure` with:
+   - `tile_count_min: 15`
+   - `has_continuous_horizontal` checks
+4. Call `get_editor_screenshot`
+5. Vision validation:
+   - Ask: "Is this a platformer level with ground, gaps, and elevated platform? YES or NO."
+6. PASS if: validate_tilemap_structure passes AND vision returns YES
+
 ## Failure Handling Protocol
 
 When a test fails:
