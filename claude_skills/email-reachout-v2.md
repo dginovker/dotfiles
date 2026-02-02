@@ -234,6 +234,10 @@ ziva.sh
 
 **AVOID**: ALL CAPS, spam triggers, AI phrases like "Unlock the power of..."
 
+## Validation
+
+Use the "email-validate.md" inside a subagent to catch potential issues.
+
 ## Checklist Before Sending
 
 - [ ] Starts with "Hi [Name]" and "I hope you're well"?
@@ -245,6 +249,7 @@ ziva.sh
 - [ ] Signs off properly (Kindly/Sincerely + Dan & The Ziva Team)?
 - [ ] Would make the recipient feel valued and excited about collaboration?
 - [ ] No AI tells? (Check banned words)
+- [ ] Used the email-validate subagent?
 
 ## Output Format
 
