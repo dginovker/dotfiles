@@ -1,8 +1,8 @@
 ---
-description: Create a commit using dginovker's commit message style and push
+description: Create a commit using the current git user's commit message style and push
 ---
 
-1. Run `git log --author=dginovker --oneline -20` to see the commit message style
+1. Run `git config user.name` to get the current user, then `git log --author="<name>" --oneline -20` to see their commit message style
 2. Think about what the user originally requested - focus on the **result** ("fix x", "add y"), not the implementation details (the "how" is obvious from the code)
 3. Stage and commit with a short message matching the observed style. No description body.
 4. **Branch targeting (Ziva repos only):** If in a Ziva repo (path contains `/ziva/`):
