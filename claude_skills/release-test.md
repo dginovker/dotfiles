@@ -121,6 +121,12 @@ Test steps:
   - When enabled: Ziva panel should appear as a main screen tab alongside 2D/3D/Script
   - When disabled: Ziva panel should appear in the side dock next to Scene/Import tabs
   - Verify panel is functional (can send messages) and visually correct (screenshot) in both positions
+- **Font scale from Godot settings**:
+  - Call `GET /get-font-scale` endpoint
+  - Verify response contains `editorScale` (number > 0)
+  - Verify `cssFontScale` matches `editorScale` (or both equal 1)
+  - Verify `computedFontSize` is a valid CSS pixel value (e.g., "16px" or scaled)
+  - Call `GET /state` and verify `editorScale` field is present
 
 ### Category 6: Rate Limiting
 - Rate limit status displays correctly
@@ -137,6 +143,7 @@ Test steps:
 - Upgrade button is clickable
 - Plan comparison displays correctly
 - Back navigation works
+- **Embedded checkout session creation**: Call `/trigger-checkout` with `{"tier": "pro", "interval": "month"}` to initiate checkout from plugin context. Verify the response contains `clientSecret` (not an error). This validates that the plugin's return_url handling works (file:// URLs must be filtered out before sending to Stripe).
 - **Stripe checkout flow (UI simulation)**: Use `/simulate-checkout-success` to trigger success UI for quick validation
 - Verify "Subscription Activated!" message appears
 - Verify dialog closes after clicking Continue
