@@ -66,7 +66,7 @@ Create a TEST PLAN with 5-10 specific tests that exercise the feature area. For 
 
 **The test plan must be executable via `/ziva-mcp-testing`** - meaning tests that:
 - Launch Godot with the plugin via ./run.sh
-- Connect via the test API WebSocket
+- Connect via the test API HTTP endpoints
 - Execute tool calls and verify responses
 - Check UI state via bridge methods
 - Take screenshots as evidence
@@ -143,7 +143,7 @@ If ANY verification step fails:
 **CRITICAL: If the test API or any testing infrastructure is broken, you MUST fix it before proceeding.**
 
 - "Test API doesn't work" is NOT an acceptable reason to skip verification
-- If WebSocket connections timeout, diagnose WHY and fix it
+- If HTTP connections timeout, diagnose WHY and fix it
 - If tools fail to execute, find the root cause
 - Broken test infrastructure is a bug that blocks ALL verification - treat it as priority #1
 - Do not report "BLOCKED" - either fix the issue or rollback and report the infrastructure bug
