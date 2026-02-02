@@ -110,6 +110,7 @@ Test steps:
 - Action tool: Call `add_node` to create a test node, verify it exists via `get_scene_tree`, call `delete_node` to remove it, verify it's gone
 - Project settings tool: Call `update_project_setting` with setting_name="application/config/name" and value="ReleaseTest", verify via `get_project_info`, then restore original value
 - Docs tool: Call `get_class_docs` with class_name="Node2D", verify response contains class description and methods
+- TileSet physics tool: Call `configure_tileset_atlas` with `physics_collision_layer=1`, `physics_collision_mask=1`, `add_collision_shapes=true`, then call `get_tileset_info` and verify response contains "Physics Layers: 1" and "collision_layer=1"
 
 ### Category 5: Settings & Preferences
 - Open settings dialog via `/open-settings`, close via `/close-settings`, verify `settingsOpen` state changes
