@@ -266,6 +266,7 @@ Test prompt caching functionality for one model per provider:
 - GPT 5.2 (OpenAI)
 - GLM 4.6 (GLM)
 - Grok Code Fast 1 (xAI)
+- Kimi K2.5 (Moonshot)
 
 **Test Procedure** (for each model):
 1. Select the model in the UI (use `/click-element` to interact with model selector dropdown)
