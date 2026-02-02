@@ -70,6 +70,7 @@ Test steps:
 - Plugin initializes (Ziva panel visible)
 - Bridge connects (webview to C++)
 - Test API becomes ready (call `GET /ready`, verify `ready: true` and `initError: null`)
+- Components register (call `POST /wait-for-ready`, verify `ready: true` and `components.chatActions: true`)
 
 **If `/ready` returns `ready: false`:**
 1. Check the `initError` field in the response - it contains the actual error message
