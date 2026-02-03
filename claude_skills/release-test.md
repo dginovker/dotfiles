@@ -278,11 +278,12 @@ Test prompt caching functionality for one model per provider:
 - Kimi K2.5 (Moonshot)
 
 **Test Procedure** (for each model):
-1. Select the model in the UI (use `/click-element` to interact with model selector dropdown)
-2. Send first message with substantial context via `/send-message` (e.g., "Analyze this code: [paste 500+ line example]")
-3. Query `/last-usage` to get baseline token usage and costs
-4. Send second message with same context via `/send-message` (e.g., "Now add error handling to that code")
-5. Query `/last-usage` again to compare caching metrics
+1. Create a NEW chat via `/create-chat` to avoid any conversation history with images
+2. Set the model via `/set-model` with the model ID (e.g., `{"modelId": "anthropic/claude-opus-4.5"}`)
+3. Send first message with simple text via `/send-message`: `{"message": "What is 2+2? Explain your reasoning step by step."}`
+4. Query `/last-usage` to get baseline token usage and costs
+5. Send second message via `/send-message`: `{"message": "Now what is 3+3? Use the same format."}`
+6. Query `/last-usage` again to compare caching metrics
 
 **Validation Criteria**:
 - Second message shows `cachedInputTokens > 0` in `/last-usage` response
