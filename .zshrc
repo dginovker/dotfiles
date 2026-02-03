@@ -178,6 +178,12 @@ for skill in ~/Projects/dotfiles/claude_skills/*.md; do
   ln -sf "$skill" ~/.claude/skills/"$name"/SKILL.md
 done
 
+# Rules are loaded automatically alongside CLAUDE.md
+mkdir -p ~/.claude/rules
+for rule in ~/Projects/dotfiles/claude_rules/*.md; do
+  ln -sf "$rule" ~/.claude/rules/
+done
+
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/opt/gcloudcli/google-cloud-sdk/path.zsh.inc' ]; then . '/opt/gcloudcli/google-cloud-sdk/path.zsh.inc'; fi
 
