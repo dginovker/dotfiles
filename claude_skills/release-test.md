@@ -270,7 +270,7 @@ cd apps/web && pnpm exec playwright test hosted-checkout.spec.ts --reporter=line
 **PREREQUISITE**: Must be authenticated (see Category 3 authentication steps).
 
 Test prompt caching functionality for one model per provider:
-- Claude Opus 4.5 (Anthropic)
+- Claude Opus 4.6 (Anthropic)
 - Gemini 3 Flash (Google)
 - GPT 5.2 (OpenAI)
 - GLM 4.6 (GLM)
@@ -279,7 +279,7 @@ Test prompt caching functionality for one model per provider:
 
 **Test Procedure** (for each model):
 1. Create a NEW chat via `/create-chat` to avoid any conversation history with images
-2. Set the model via `/set-model` with the model ID (e.g., `{"modelId": "anthropic/claude-opus-4.5"}`)
+2. Set the model via `/set-model` with the model ID (e.g., `{"modelId": "anthropic/claude-opus-4.6"}`)
 3. Send first message with simple text via `/send-message`: `{"message": "What is 2+2? Explain your reasoning step by step."}`
 4. Query `/last-usage` to get baseline token usage and costs
 5. Send second message via `/send-message`: `{"message": "Now what is 3+3? Use the same format."}`
@@ -303,7 +303,7 @@ Test prompt caching functionality for one model per provider:
   "category": "Prompt Caching",
   "tests": [
     {
-      "name": "Claude Opus 4.5 caching",
+      "name": "Claude Opus 4.6 caching",
       "status": "passed",
       "details": "First message: 2000 input tokens, $0.015. Second message: 1800 cached + 200 new tokens, $0.003. Cache hit rate: 90%"
     }
