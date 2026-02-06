@@ -226,6 +226,8 @@ cd apps/web && pnpm exec playwright test hosted-checkout.spec.ts --reporter=line
 - Expandable sections: Click "Open scripts" row in the dialog, verify it expands to show individual script files sorted by token count (largest first)
 - Settings link: Verify clicking the settings gear icon in the dialog footer opens Settings dialog at the Context tab
 - Context settings tab: In Settings, verify the Context tab (Layers icon) shows auto-add toggles for scripts, scenes, and AGENTS.md
+- Per-message cost badges (API-verifiable): After sending a message and receiving a response, call `/get-message-costs`, assert `count > 0` and at least one cost entry has value > 0
+- Cost trigger in footer (screenshot): Verify the prompt footer shows a dotted-underline cost text (not a green circle SVG) that opens the context usage dialog when clicked
 
 ### Category 10: Error Handling
 1. Invalid tool call returns error gracefully
