@@ -25,21 +25,23 @@ Test Script ──HTTP──▶ Vite Dev Server ──polling──▶ React App
 **Key Components:**
 - **Vite Dev Server**: Runs on port 5173, provides HTTP endpoints at `/__test_api/*`
 - **plugin-app**: React app running in webview, polls for requests and submits responses
-- **Bridge**: IPC communication between webview and C++ plugin (see `apps/plugin-app/src/lib/bridge/schemas.ts`)
-- **Tool Manager**: C++ tool registry with 34 tools (see `gdext/src/tools/ToolManagerZiva.cpp`)
+- **Bridge**: IPC communication between webview and C++ plugin (see `apps/plugin-app/src/lib/bridge/schemas.ts` for all bridge method definitions)
+- **Tool Manager**: C++ tool registry (see `gdext/src/tools/ToolManagerZiva.cpp` for registered tools, `apps/plugin-app/src/lib/agent.ts` for TypeScript tool definitions)
 
 ## Starting the Plugin
 
 ```bash
-cd /home/w/Projects/ziva
+cd ~/Projects/ziva
 ./run.sh
 ```
 
 This script:
 1. Kills conflicting processes on ports 3000, 5173, 9222
-2. Builds the plugin (`./dev.sh`)
-3. Starts web server (port 3000) and plugin-app (port 5173) in background
-4. Opens Godot editor with the plugin loaded
+2. Runs `pnpm install`
+3. Builds the C++ extension (`cd gdext && ./dev.sh`)
+4. Sets up Stripe webhook forwarding
+5. Starts web server (port 3000) and plugin-app (port 5173) in background
+6. Opens Godot editor with the plugin loaded
 
 ## Log Files
 
@@ -137,19 +139,21 @@ console.log(endpoints);
 
 ### Response Format
 
-All tool calls return:
+Tool calls via `/call-tool` return a nested structure:
 ```typescript
 {
-  success: boolean,
-  type: "text" | "image" | "json",
-  data: any,
-  mimeType?: string
+  result: {
+    success: boolean,
+    type: "text" | "image" | "json",
+    data: any,
+    mimeType?: string
+  }
 }
 ```
 
 ## Available Ziva Tools
 
-View `gdext/src/tools/ToolManagerZiva.cpp` for a list of tools Ziva can call
+See `gdext/src/tools/ToolManagerZiva.cpp` for C++ tool registrations and `apps/plugin-app/src/lib/agent.ts` for TypeScript tool definitions.
 
 ## Testing Workflow
 
@@ -229,7 +233,7 @@ Always clean state between test iterations:
 pkill -f "godot.*godot-project"
 
 # Reset project state
-cd /home/w/Projects/ziva
+cd ~/Projects/ziva
 git checkout godot-project/
 ```
 
@@ -260,5 +264,6 @@ git checkout godot-project/
 
 - Test API is only available in development mode (not production builds)
 - Never commit to git unless explicitly asked
-- All bridge method definitions: `apps/plugin-app/src/lib/bridge/schemas.ts`
-- All tool implementations: `gdext/src/tools/` (actions/ and queries/ subdirectories)
+- Bridge method definitions: see `apps/plugin-app/src/lib/bridge/schemas.ts`
+- Tool implementations: see `gdext/src/tools/` (actions/ and queries/ subdirectories)
+- Tool definitions (TypeScript): see `apps/plugin-app/src/lib/agent.ts`
