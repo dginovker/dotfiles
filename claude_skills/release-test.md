@@ -211,10 +211,21 @@ cd apps/web && pnpm exec playwright test hosted-checkout.spec.ts --reporter=line
 3. Model selector dropdown works
 
 ### Category 9: Context Injection
-1. Open scripts appear in context
-2. Open scenes appear in context
-3. AGENTS.md content available
-4. Context toggles affect injection
+- Open scripts appear in context
+- Open scenes appear in context
+- AGENTS.md content available
+- Context toggles affect injection
+
+### Category 16: Context Usage Widget
+- Token tracking after message (API-verifiable): Send a message that triggers tool use, wait for response, call `/get-context-usage`, assert `breakdown.aiOutput > 0`, `breakdown.chatHistory > 0`, `breakdown.toolCalls > 0`, `toolCallDetails` has entries
+- Total cost non-zero (API-verifiable): Assert `totalCost > 0` and is a number
+- Cache with Anthropic model (API-verifiable): Switch to Anthropic via `/set-model`, send two messages, call `/get-context-usage`, assert `cachedInputTokens > 0`, `estimatedSavings > 0`, `cacheDisplay` matches pattern with percentage
+- Cache with non-cache model (API-verifiable): Switch to `xai/grok-4`, send a message, assert `cacheDisplay === "N/A"`
+- Widget UI rendering (screenshot): Open dialog, verify "This conversation" section with "Total cost", "Cache", "Est. savings"; "What's using context" section with "Chat history" (collapsible), "AI output", "agents.md", "Open scripts", "Open scenes"; progress bar visible
+- Breakdown reflects context files: Open a script in Godot, call `/get-context-usage`, verify `breakdown.openScripts > 0`
+- Expandable sections: Click "Open scripts" row in the dialog, verify it expands to show individual script files sorted by token count (largest first)
+- Settings link: Verify clicking the settings gear icon in the dialog footer opens Settings dialog at the Context tab
+- Context settings tab: In Settings, verify the Context tab (Layers icon) shows auto-add toggles for scripts, scenes, and AGENTS.md
 
 ### Category 10: Error Handling
 1. Invalid tool call returns error gracefully
