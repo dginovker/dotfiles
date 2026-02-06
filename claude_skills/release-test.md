@@ -140,7 +140,7 @@ Test steps:
 - **Credits system removed**: Verify no "credits" references in UI or API responses (credits were replaced by USD-based rate limiting)
 - **Tier names updated**: Verify hobby tier displays as "Hobby" (not "Free") in tier badges and UI elements
 - **Database tier migration**: Verify new users are created with `subscriptionTier = 'hobby'` by default (not 'free')
-- **Free fallback mode**: Set model to `auto-max` via `/set-model`. Enter fallback via `POST /enter-fallback`, verify `GET /state` shows `rateLimitFallback: true` and `preRateLimitModelId: "auto-max"`. Send message via `/send-message`, verify `/last-usage` shows model `xai/grok-code-fast-1`. Exit fallback via `POST /exit-fallback`, verify `GET /state` shows `rateLimitFallback: false`, `selectedModelId: "auto-max"`, `preRateLimitModelId: null`.
+- **Free fallback mode**: Set model to `auto-max` via `/set-model`. Call `POST /simulate-rate-limit` to insert usage exceeding the daily limit. Send a message via `/send-message` — expect a 429 rate limit error. Verify rate limit dialog appears (take screenshot). Close the dialog, then dismiss the error banner (click ✕) which enters fallback mode. Verify `GET /state` shows `rateLimitFallback: true` and `preRateLimitModelId: "auto-max"`. Send another message via `/send-message`, verify `/last-usage` shows model `xai/grok-code-fast-1`. Finally, call `POST /reset-usage` to clear usage, verify `GET /state` shows `rateLimitFallback: false`, `selectedModelId: "auto-max"`, `preRateLimitModelId: null`.
 
 ### Category 7: Payment UI
 - Set yourself to be getting rate limited on the Hobby plan
