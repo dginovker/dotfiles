@@ -117,6 +117,7 @@ Test steps:
 - Open settings dialog via `/open-settings`, close via `/close-settings`, verify `settingsOpen` state changes
 - Toggle settings and verify state changes
 - Model selection works
+- **Auto tier model selection**: Default model is `"auto"` (verify via `GET /state`). Set each tier via `/set-model`: `auto-lite`, `auto`, `auto-max` — verify each is accepted. Set a specific model (`google/gemini-3-flash`) — verify it's accepted. Set back to `auto`, send a message via `/send-message`, then verify `GET /state` returns a non-null `resolvedModelId` from the auto tier's model pool.
 - Settings persist after closing/reopening
 - **UI Mode setting**: Toggle "Use main screen tab (like 2D/3D)" setting:
   - When enabled: Ziva panel should appear as a main screen tab alongside 2D/3D/Script
