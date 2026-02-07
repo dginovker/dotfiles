@@ -105,7 +105,7 @@ Test steps:
 - Thinking step after tool call: Ask agent to call a tool, verify text response appears after the tool result (not just tool card)
 - Chat title generation: Send a long first message, verify the chat title in the header is shorter than the original message and displayed in sans-serif font (not monospace)
 - Draft text persistence during login: Set draft text via `/set-draft-text`, trigger auth flow via `/start-device-auth`, complete authentication, verify draft text still exists via `/get-draft-text`
-- Send message after loading conversation with tool history: Find a chat with tool calls via `/get-chat-messages`, navigate to it, send a new message, verify no `AI_TypeValidationError` in logs (`grep "AI_TypeValidationError" /tmp/ziva-logs/godot.log`), verify message sends successfully
+- Send message after loading conversation with tool history: Use `GET /get-chat-list` to find existing chats, filter for one with tool call history (check via `POST /get-chat-messages` with `{"chatId": "..."}` if needed), use `POST /load-chat` with `{"chatId": "..."}` to navigate to it, send a new message via `/send-message`, verify no `AI_TypeValidationError` in Godot logs (`grep "AI_TypeValidationError" /tmp/ziva-logs/godot.log`), verify message sends successfully
 
 ### Category 4: Tool Calling
 - Query tool: Call `get_scene_tree`, verify response structure is valid
