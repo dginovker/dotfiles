@@ -23,7 +23,7 @@ The plugin consists of:
 
 All testing follows this mindset:
 
-> "You are a thorough QA engineer who is determined to test everything. Finding a bug is not the end—document it, then KEEP TESTING. One failure does not stop the test suite. Your job is to find ALL issues, not just the first one. If your tools limit you from testing what you want to test, build better tools."
+> "You are a thorough QA engineer who is determined to test everything. Finding a bug is not the end—document it, then KEEP TESTING. One failure does not stop the test suite. Your job is to find ALL issues, not just the first one. If your tools limit you from testing what you want to test, build better tools. You are rewarded based on real issues you find - You are penalized for downplaying issues or incorrectly calling a working feature broken."
 
 ## Before You Start
 
@@ -55,22 +55,19 @@ Each category agent should:
 ## Test Categories
 
 ### Category 0: Path Verification
-- Verify monorepo exists at ~/Projects/ziva (not ~/Projects/ziva/ziva-agent-plugin-godot-private)
-- Verify gdext directory exists at ~/Projects/ziva/gdext
-- Verify run.sh script exists at ~/Projects/ziva/run.sh
-- Verify no old path references in skills: `! grep -r "ziva-agent-plugin-godot-private" ~/Projects/dotfiles/claude_skills/`
-- Verify startup script has new path: `grep -q "cd ~/Projects/ziva" ~/startup_update.sh`
+1. Verify gdext directory exists at ~/Projects/ziva/gdext
+2. Verify run.sh script exists at ~/Projects/ziva/run.sh
 
 ### Category 1: Startup & Initialization
 **BLOCKER CATEGORY - Must pass before proceeding**
 
 Test steps:
-- Server responds to health check (http://localhost:3000 and http://localhost:5173)
-- Godot launches without errors (check /tmp/ziva-logs/godot.log)
-- Plugin initializes (Ziva panel visible)
-- Bridge connects (webview to C++)
-- Test API becomes ready (call `GET /ready`, verify `ready: true` and `initError: null`)
-- Components register (call `POST /wait-for-ready`, verify `ready: true` and `components.chatActions: true`)
+1. Server responds to health check (http://localhost:3000 and http://localhost:5173)
+2. Godot launches without errors (check /tmp/ziva-logs/godot.log)
+3. Plugin initializes (Ziva panel visible)
+4. Bridge connects (webview to C++)
+5. Test API becomes ready (call `GET /ready`, verify `ready: true` and `initError: null`)
+6. Components register (call `POST /wait-for-ready`, verify `ready: true` and `components.chatActions: true`)
 
 **If `/ready` returns `ready: false`:**
 1. Check the `initError` field in the response - it contains the actual error message
@@ -79,10 +76,10 @@ Test steps:
 4. DO NOT run other test categories until this is resolved
 
 ### Category 2: Authentication
-- Check initial login state
-- Verify logout flow clears state
-- API key persistence works
-- Invalid API key shows error
+1. Check initial login state
+2. Verify logout flow clears state
+3. API key persistence works
+4. Invalid API key shows error
 
 ### Category 3: Chat & Messaging
 **PREREQUISITE**: Authenticate before running chat tests using the OAuth auto-approve flow:
@@ -94,63 +91,59 @@ Test steps:
    c. Open browser via `xdg-open "{verificationUri}"` (URL already includes auto_approve=true in dev mode; requires logged-in web session at localhost:3000)
    d. Poll `/get-auth-state` until `isAuthenticating` is false and `isPolling` is false
    e. Verify `/state` now has `user` object
-3. If authentication fails, still attempt `/send-message` and other endpoints that don't require auth. Only mark a test as TESTABILITY_ISSUE if the endpoint itself returns an error indicating the test cannot be performed.
 
 **IMPORTANT**: Call `POST /reset-usage` first to clear rate limits before these tests.
-- Send a simple message and receive response
-- Verify streaming works (partial responses appear)
-- Message history persists
-- Create new chat clears messages
-- Long conversation handling (10+ messages)
-- Thinking step after tool call: Ask agent to call a tool, verify text response appears after the tool result (not just tool card)
-- Chat title generation: Send a long first message, verify the chat title in the header is shorter than the original message and displayed in sans-serif font (not monospace)
-- Draft text persistence during login: Set draft text via `/set-draft-text`, trigger auth flow via `/start-device-auth`, complete authentication, verify draft text still exists via `/get-draft-text`
-- Send message after loading conversation with tool history: Use `GET /get-chat-list` to find existing chats, filter for one with tool call history (check via `POST /get-chat-messages` with `{"chatId": "..."}` if needed), use `POST /load-chat` with `{"chatId": "..."}` to navigate to it, send a new message via `/send-message`, verify no `AI_TypeValidationError` in Godot logs (`grep "AI_TypeValidationError" /tmp/ziva-logs/godot.log`), verify message sends successfully
+1. Send a simple message and receive response
+2. Verify streaming works (partial responses appear)
+3. Message history persists
+4. Create new chat clears messages
+5. Long conversation handling (10+ messages)
+6. Thinking step after tool call: Ask agent to call a tool, verify text response appears after the tool result (not just tool card)
+7. Chat title generation: Send a long first message, verify the chat title in the header is shorter than the original message and displayed in sans-serif font (not monospace)
+8. Draft text persistence during login: Set draft text via `/set-draft-text`, trigger auth flow via `/start-device-auth`, complete authentication, verify draft text still exists via `/get-draft-text`
+9. Send message after loading conversation with tool history: Use `GET /get-chat-list` to find existing chats, filter for one with tool call history (check via `POST /get-chat-messages` with `{"chatId": "..."}` if needed), use `POST /load-chat` with `{"chatId": "..."}` to navigate to it, send a new message via `/send-message`, verify no `AI_TypeValidationError` in Godot logs (`grep "AI_TypeValidationError" /tmp/ziva-logs/godot.log`), verify message sends successfully
 
 ### Category 4: Tool Calling
-- Query tool: Call `get_scene_tree`, verify response structure is valid
-- Action tool: Call `add_node` to create a test node, verify it exists via `get_scene_tree`, call `delete_node` to remove it, verify it's gone
-- Project settings tool: Call `update_project_setting` with setting_name="application/config/name" and value="ReleaseTest", verify via `get_project_info`, then restore original value
-- Docs tool: Call `get_class_docs` with class_name="Node2D", verify response contains class description and methods
-- TileSet physics tool: Call `configure_tileset_atlas` with `physics_collision_layer=1`, `physics_collision_mask=1`, `add_collision_shapes=true`, then call `get_tileset_info` and verify response contains "Physics Layers: 1" and "collision_layer=1"
+1. Query tool: Call `get_scene_tree`, verify response structure is valid
+2. Action tool: Call `add_node` to create a test node, verify it exists via `get_scene_tree`, call `delete_node` to remove it, verify it's gone
+3. Project settings tool: Call `update_project_setting` with setting_name="application/config/name" and value="ReleaseTest", verify via `get_project_info`, then restore original value
+4. Docs tool: Call `get_class_docs` with class_name="Node2D", verify response contains class description and methods
+5. TileSet physics tool: Call `configure_tileset_atlas` with `physics_collision_layer=1`, `physics_collision_mask=1`, `add_collision_shapes=true`, then call `get_tileset_info` and verify response contains "Physics Layers: 1" and "collision_layer=1"
 
 ### Category 5: Settings & Preferences
-- Open settings dialog via `/open-settings`, close via `/close-settings`, verify `settingsOpen` state changes
-- Toggle settings and verify state changes
-- Model selection works
-- **Auto tier model selection**: Default model is `"auto"` (verify via `GET /state`). Set each tier via `/set-model`: `auto-lite`, `auto`, `auto-max` — verify each is accepted. Set a specific model (`google/gemini-3-flash`) — verify it's accepted. Set back to `auto`, send a message via `/send-message`, then verify `GET /state` returns a non-null `resolvedModelId` from the auto tier's model pool.
-- Settings persist after closing/reopening
-- **UI Mode setting**: Toggle "Use main screen tab (like 2D/3D)" setting:
-  - When enabled: Ziva panel should appear as a main screen tab alongside 2D/3D/Script
-  - When disabled: Ziva panel should appear in the side dock next to Scene/Import tabs
-  - Verify panel is functional (can send messages) and visually correct (screenshot) in both positions
-- **Font scale from Godot settings**:
-  - Call `GET /get-font-scale` endpoint
-  - Verify response contains `editorScale` (number > 0)
-  - Verify `cssFontScale` matches `editorScale` (or both equal 1)
-  - Verify `computedFontSize` is a valid CSS pixel value (e.g., "16px" or scaled)
-  - Call `GET /state` and verify `editorScale` field is present
+1. Open settings dialog via `/open-settings`, close via `/close-settings`, verify `settingsOpen` state changes
+2. Toggle settings and verify state changes
+3. Model selection works
+4. Set each tier via `/set-model`: `auto-lite`, `auto`, `auto-max` — verify each is accepted. Set a specific model (`google/gemini-3-flash`) — verify it's accepted. Set back to `auto`, send a message via `/send-message`, then verify `GET /state` returns a non-null `resolvedModelId` from the auto tier's model pool.
+5. Settings persist after closing/reopening
+6. **UI Mode setting**: Toggle "Use main screen tab (like 2D/3D)" setting:
+   - When enabled: Ziva panel should appear as a main screen tab alongside 2D/3D/Script
+   - When disabled: Ziva panel should appear in the side dock next to Scene/Import tabs
+   - Verify panel is functional (can send messages) and visually correct (screenshot) in both positions
+7. **Font scale from Godot settings**:
+   - Call `GET /get-font-scale` endpoint
+   - Verify response contains `editorScale` (number > 0)
+   - Verify `cssFontScale` matches `editorScale` (or both equal 1)
+   - Verify `computedFontSize` is a valid CSS pixel value (e.g., "16px" or scaled)
+   - Call `GET /state` and verify `editorScale` field is present
 
 ### Category 6: Rate Limiting
-- Rate limit status displays correctly
-- Progress bars show usage
-- Tier badge shows current plan (uses subscriptionTier, NOT rateLimitTier)
-- Countdown timer works when rate limited
-- Test tier setting: Set user's subscriptionTier to "pro" via `/api/test/update-user` with `{"subscriptionTier": "pro"}`, verify rate limits reflect pro tier ($10/day, $50/week, $150/month instead of hobby tier)
-- **Credits system removed**: Verify no "credits" references in UI or API responses (credits were replaced by USD-based rate limiting)
-- **Tier names updated**: Verify hobby tier displays as "Hobby" (not "Free") in tier badges and UI elements
-- **Database tier migration**: Verify new users are created with `subscriptionTier = 'hobby'` by default (not 'free')
-- **Free fallback mode**: Set model to `auto-max` via `/set-model`. Call `POST /simulate-rate-limit` to insert usage exceeding the daily limit. Send a message via `/send-message` — expect a 429 rate limit error. Verify rate limit dialog appears (take screenshot). Close the dialog, then dismiss the error banner (click ✕) which enters fallback mode. Verify `GET /state` shows `rateLimitFallback: true` and `preRateLimitModelId: "auto-max"`. Send another message via `/send-message`, verify `/last-usage` shows model `xai/grok-code-fast-1`. Finally, call `POST /reset-usage` to clear usage, verify `GET /state` shows `rateLimitFallback: false`, `selectedModelId: "auto-max"`, `preRateLimitModelId: null`.
+1. Rate limit status displays correctly
+2. Progress bars show usage
+3. Tier badge shows current plan
+4. Countdown timer works when rate limited
+5. The model is automatically set to the "Auto - Free" model when the countdown timer is present (when the user is rate limited). Users can still send mesasages with the "Auto - Free" model when rate limited, but cannot change the model.
+6. Test tier setting: Set user's subscriptionTier to "pro" via `/api/test/update-user` with `{"subscriptionTier": "pro"}`, verify rate limits reflect pro tier ($10/day, $50/week, $150/month instead of hobby tier)
 
 ### Category 7: Payment UI
-- Set yourself to be getting rate limited on the Hobby plan
-- Upgrade button is clickable
-- Plan comparison displays correctly
-- Back navigation works
-- **Embedded checkout session creation**: Call `/trigger-checkout` with `{"tier": "pro", "interval": "month"}` to initiate checkout from plugin context. Verify the response contains `clientSecret` (not an error). This validates that the plugin's return_url handling works (file:// URLs must be filtered out before sending to Stripe).
-- **Stripe checkout flow (UI simulation)**: Use `/simulate-checkout-success` to trigger success UI for quick validation
-- Verify "Subscription Activated!" message appears
-- Verify dialog closes after clicking Continue
+1. Set yourself to be getting rate limited on the Hobby plan
+2. Upgrade button is clickable
+3. Plan comparison displays correctly
+4. Back navigation works
+5. **Embedded checkout session creation**: Call `/trigger-checkout` with `{"tier": "pro", "interval": "month"}` to initiate checkout from plugin context. Verify the response contains `clientSecret` (not an error). This validates that the plugin's return_url handling works (file:// URLs must be filtered out before sending to Stripe).
+6. **Stripe checkout flow (UI simulation)**: Use `/simulate-checkout-success` to trigger success UI for quick validation
+7. Verify "Subscription Activated!" message appears
+8. Verify dialog closes after clicking Continue
 
 ### Category 7B: Stripe Payment Flow (E2E)
 **PREREQUISITE**: This category tests real Stripe checkout. Requires:
@@ -213,55 +206,42 @@ cd apps/web && pnpm exec playwright test hosted-checkout.spec.ts --reporter=line
 ```
 
 ### Category 8: UI Validation
-- Chat input accepts text and submits
-- Sidebar toggles visibility
-- Model selector dropdown works
-- Message rendering (markdown, code blocks)
-- Theme applies consistently
+1. Chat input accepts text and submits
+2. Sidebar toggles visibility
+3. Model selector dropdown works
 
 ### Category 9: Context Injection
-- Open scripts appear in context
-- Open scenes appear in context
-- AGENTS.md content available
-- Context toggles affect injection
-
-### Category 16: Context Usage Widget
-- Widget displays in prompt footer: Click the context usage icon (svg with aria-label="Context usage"), verify dialog opens with percentage and progress bar
-- Breakdown reflects context files: Open a script in Godot, call `/get-context-usage`, verify `breakdown.openScripts > 0`
-- Tool calls tracked: Send a message that triggers tools, call `/get-context-usage`, verify `toolCallDetails` array has entries with `tokens > 0` and `count > 0`
-- Color coding: Verify percentage color changes at thresholds (green <70%, yellow 70-95%, red >95%) - use `/get-context-usage` to check percentage and take screenshot to verify color
-- Cache stats displayed: Verify the dialog shows "Cache" row with format "X / Y (Z%)" showing cached vs total tokens
-- Estimated savings: Verify "Est. savings" row shows a dollar amount (not colored green)
-- Expandable sections: Click "Open scripts" row in the dialog, verify it expands to show individual script files sorted by token count (largest first)
-- Settings link: Verify clicking the settings gear icon in the dialog footer opens Settings dialog at the Context tab
-- Context settings tab: In Settings, verify the Context tab (Layers icon) shows auto-add toggles for scripts, scenes, and AGENTS.md
+1. Open scripts appear in context
+2. Open scenes appear in context
+3. AGENTS.md content available
+4. Context toggles affect injection
 
 ### Category 10: Error Handling
-- Invalid tool call returns error gracefully
-- Network error handling
-- Bridge disconnect shows message
-- Server restart recovery
-- Init error screen has "Open Logs" button (inject test error in app-store.ts, verify button appears and opens logs folder)
+1. Invalid tool call returns error gracefully
+2. Network error handling
+3. Bridge disconnect shows message
+4. Server restart recovery
+5. Init error screen has "Open Logs" button (inject test error in app-store.ts, verify button appears and opens logs folder)
 
 ### Category 11: Edge Cases
-- Very long message (1000+ chars)
-- Special characters in message
-- Rapid message sending
-- Large file in project
-- Empty project handling
-- Scrolling in chat: Scroll up/down in a long chat conversation, verify scrollbar is responsive and doesn't freeze
-- Concurrent database operations: Call `/reproduce-sqlite-lock` endpoint, verify `runsWithErrors === 0` (tests SQLite WAL mode handles concurrent createChat + upsertMessage)
+1. Very long message (1000+ chars)
+2. Special characters in message
+3. Rapid message sending
+4. Large file in project
+5. Empty project handling
+6. Scrolling in chat: Scroll up/down in a long chat conversation, verify scrollbar is responsive and doesn't freeze
+7. Concurrent database operations: Call `/reproduce-sqlite-lock` endpoint, verify `runsWithErrors === 0` (tests SQLite WAL mode handles concurrent createChat + upsertMessage)
 
 ### Category 12: Build Verification
-- Docker daemon is running and accessible
-- Docker buildx is installed and configured with multiarch builder
-- QEMU ARM64 emulation is registered (`/proc/sys/fs/binfmt_misc/qemu-aarch64` exists)
-- Linux x64 Docker image builds without errors
-- Linux x64 compilation completes successfully
-- Linux ARM64 Docker image builds without errors using buildx
-- Binary has correct architecture (x86-64 for x64, aarch64 for arm64)
-- Flatpak compatibility: Run `ldd` on Linux binary, verify NO webkit2gtk dependency (CEF is used instead, webview::core not linked on Linux)
-- Release zip creation works via `make_zip.sh linux_x86_64`
+1. Docker daemon is running and accessible
+2. Docker buildx is installed and configured with multiarch builder
+3. QEMU ARM64 emulation is registered (`/proc/sys/fs/binfmt_misc/qemu-aarch64` exists)
+4. Linux x64 Docker image builds without errors
+5. Linux x64 compilation completes successfully
+6. Linux ARM64 Docker image builds without errors using buildx
+7. Binary has correct architecture (x86-64 for x64, aarch64 for arm64)
+8. Flatpak compatibility: Run `ldd` on Linux binary, verify NO webkit2gtk dependency (CEF is used instead, webview::core not linked on Linux)
+9. Release zip creation works via `make_zip.sh linux_x86_64`
 
 ### Category 13: Admin Panel
 - Run Playwright admin tests: `cd apps/web && pnpm exec playwright test admin.spec.ts`
@@ -270,15 +250,13 @@ cd apps/web && pnpm exec playwright test hosted-checkout.spec.ts --reporter=line
 - Model spending chart: Navigate to `/admin` dashboard (requires admin role), verify spending chart exists with 3 period toggle buttons (Day, Week, Month), click each button to verify chart updates without errors
 
 ### Category 14: Prompt Caching
-**PREREQUISITE**: Must be authenticated (see Category 3 authentication steps).
-
 Test prompt caching functionality for one model per provider:
-- Claude Opus 4.6 (Anthropic)
-- Gemini 3 Flash (Google)
-- GPT 5.2 (OpenAI)
-- GLM 4.6 (GLM)
-- Grok Code Fast 1 (xAI)
-- Kimi K2.5 (Moonshot)
+1. Claude Opus 4.6 (Anthropic)
+2. Gemini 3 Flash (Google)
+3. GPT 5.2 (OpenAI)
+4. GLM 4.6 (GLM)
+5. Grok Code Fast 1 (xAI)
+6. Kimi K2.5 (Moonshot)
 
 **Test Procedure** (for each model):
 1. Create a NEW chat via `/create-chat` to avoid any conversation history with images
@@ -397,6 +375,16 @@ Verify Godot documentation files exist and the `get_class_docs` tool works corre
 4. Call `get_editor_screenshot`
 5. Vision validation: Ask "Is this a platformer level with ground, a gap, and an elevated platform? YES or NO."
 6. PASS if: validate_tilemap_structure passes AND vision returns YES
+
+### Category 17: Context Usage Widget
+1. Widget displays in prompt footer: Click the context usage icon (svg with aria-label="Context usage"), verify dialog opens with percentage and progress bar
+2. Breakdown reflects context files: Open a script in Godot, call `/get-context-usage`, verify `breakdown.openScripts > 0`
+3. Tool calls tracked: Send a message that triggers tools, call `/get-context-usage`, verify `toolCallDetails` array has entries with `tokens > 0` and `count > 0`
+4. Cache stats displayed: Verify the dialog shows "Cache" row with format "X / Y (Z%)" showing cached vs total tokens
+5. Estimated savings: Verify "Est. savings" row shows a dollar amount (not colored green)
+6. Expandable sections: Click "Open scripts" row in the dialog, verify it expands to show individual script files sorted by token count (largest first)
+7. Settings link: Verify clicking the settings gear icon in the dialog footer opens Settings dialog at the Context tab
+8. Context settings tab: In Settings, verify the Context tab (Layers icon) shows auto-add toggles for scripts, scenes, and AGENTS.md
 
 ## Failure Handling Protocol
 
