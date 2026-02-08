@@ -211,23 +211,10 @@ cd apps/web && pnpm exec playwright test hosted-checkout.spec.ts --reporter=line
 3. Model selector dropdown works
 
 ### Category 9: Context Injection
-- Open scripts appear in context
-- Open scenes appear in context
-- AGENTS.md content available
-- Context toggles affect injection
-
-### Category 16: Context Usage Widget
-- Token tracking after message (API-verifiable): Send a message that triggers tool use, wait for response, call `/get-context-usage`, assert `breakdown.aiOutput > 0`, `breakdown.chatHistory > 0`, `breakdown.toolCalls > 0`, `toolCallDetails` has entries
-- Total cost non-zero (API-verifiable): Assert `totalCost > 0` and is a number
-- Cache with Anthropic model (API-verifiable): Switch to Anthropic via `/set-model`, send two messages, call `/get-context-usage`, assert `cachedInputTokens > 0`, `estimatedSavings > 0`, `cacheDisplay` matches pattern with percentage
-- Cache with non-cache model (API-verifiable): Switch to `xai/grok-4`, send a message, assert `cacheDisplay === "N/A"`
-- Widget UI rendering (screenshot): Open dialog, verify "This conversation" section with "Total cost", "Cache", "Est. savings"; "What's using context" section with "Chat history" (collapsible), "AI output", "agents.md", "Open scripts", "Open scenes"; progress bar visible
-- Breakdown reflects context files: Open a script in Godot, call `/get-context-usage`, verify `breakdown.openScripts > 0`
-- Expandable sections: Click "Open scripts" row in the dialog, verify it expands to show individual script files sorted by token count (largest first)
-- Settings link: Verify clicking the settings gear icon in the dialog footer opens Settings dialog at the Context tab
-- Context settings tab: In Settings, verify the Context tab (Layers icon) shows auto-add toggles for scripts, scenes, and AGENTS.md
-- Per-message cost badges (API-verifiable): After sending a message and receiving a response, call `/get-message-costs`, assert `count > 0` and at least one cost entry has value > 0
-- Cost trigger in footer (screenshot): Verify the prompt footer shows a dotted-underline cost text (not a green circle SVG) that opens the context usage dialog when clicked
+1. Open scripts appear in context
+2. Open scenes appear in context
+3. AGENTS.md content available
+4. Context toggles affect injection
 
 ### Category 10: Error Handling
 1. Invalid tool call returns error gracefully
@@ -261,6 +248,8 @@ cd apps/web && pnpm exec playwright test hosted-checkout.spec.ts --reporter=line
 - Verify all tests pass
 - Report failures in standard category JSON format
 - Model spending chart: Navigate to `/admin` dashboard (requires admin role), verify spending chart exists with 3 period toggle buttons (Day, Week, Month), click each button to verify chart updates without errors
+- Daily spending API: Call `GET /api/admin/model-spending-summary?period=day`, verify response has 24+ hourly data points (zero-filled), each with `timestamp`, `modelId`, and `cost` fields. Verify cost values have no more than 2 significant decimal digits when displayed.
+- Dollar formatting: Spot-check admin pages (daily-usage, top-users, request-logs) and verify all dollar amounts display as `$X.XX` with exactly 2 decimal places (not 4 or 6)
 
 ### Category 14: Prompt Caching
 Test prompt caching functionality for one model per provider:
@@ -390,14 +379,17 @@ Verify Godot documentation files exist and the `get_class_docs` tool works corre
 6. PASS if: validate_tilemap_structure passes AND vision returns YES
 
 ### Category 17: Context Usage Widget
-1. Widget displays in prompt footer: Click the context usage icon (svg with aria-label="Context usage"), verify dialog opens with percentage and progress bar
-2. Breakdown reflects context files: Open a script in Godot, call `/get-context-usage`, verify `breakdown.openScripts > 0`
-3. Tool calls tracked: Send a message that triggers tools, call `/get-context-usage`, verify `toolCallDetails` array has entries with `tokens > 0` and `count > 0`
-4. Cache stats displayed: Verify the dialog shows "Cache" row with format "X / Y (Z%)" showing cached vs total tokens
-5. Estimated savings: Verify "Est. savings" row shows a dollar amount (not colored green)
-6. Expandable sections: Click "Open scripts" row in the dialog, verify it expands to show individual script files sorted by token count (largest first)
-7. Settings link: Verify clicking the settings gear icon in the dialog footer opens Settings dialog at the Context tab
-8. Context settings tab: In Settings, verify the Context tab (Layers icon) shows auto-add toggles for scripts, scenes, and AGENTS.md
+1. Token tracking after message (API-verifiable): Send a message that triggers tool use, wait for response, call `/get-context-usage`, assert `breakdown.aiOutput > 0`, `breakdown.chatHistory > 0`, `breakdown.toolCalls > 0`, `toolCallDetails` has entries
+2. Total cost non-zero (API-verifiable): Assert `totalCost > 0` and is a number
+3. Cache with Anthropic model (API-verifiable): Switch to Anthropic via `/set-model`, send two messages, call `/get-context-usage`, assert `cachedInputTokens > 0`, `estimatedSavings > 0`, `cacheDisplay` matches pattern with percentage
+4. Cache with non-cache model (API-verifiable): Switch to `xai/grok-4`, send a message, assert `cacheDisplay === "N/A"`
+5. Widget UI rendering (screenshot): Open dialog, verify "This conversation" section with "Total cost", "Cache", "Est. savings"; "What's using context" section with "Chat history" (collapsible), "AI output", "agents.md", "Open scripts", "Open scenes"; progress bar visible
+6. Breakdown reflects context files: Open a script in Godot, call `/get-context-usage`, verify `breakdown.openScripts > 0`
+7. Expandable sections: Click "Open scripts" row in the dialog, verify it expands to show individual script files sorted by token count (largest first)
+8. Settings link: Verify clicking the settings gear icon in the dialog footer opens Settings dialog at the Context tab
+9. Context settings tab: In Settings, verify the Context tab (Layers icon) shows auto-add toggles for scripts, scenes, and AGENTS.md
+10. Per-message cost badges (API-verifiable): After sending a message and receiving a response, call `/get-message-costs`, assert `count > 0` and at least one cost entry has value > 0
+11. Cost trigger in footer (screenshot): Verify the prompt footer shows a dotted-underline cost text (not a green circle SVG) that opens the context usage dialog when clicked
 
 ## Failure Handling Protocol
 
