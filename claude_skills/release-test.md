@@ -391,6 +391,13 @@ Verify Godot documentation files exist and the `get_class_docs` tool works corre
 10. Per-message cost badges (API-verifiable): After sending a message and receiving a response, call `/get-message-costs`, assert `count > 0` and at least one cost entry has value > 0
 11. Cost trigger in footer (screenshot): Verify the prompt footer shows a dotted-underline cost text (not a green circle SVG) that opens the context usage dialog when clicked
 
+### Category 18: Landing Page
+1. Navigate to http://localhost:3000 (the marketing landing page)
+2. Verify the Features section displays the rotating carousel with "Ziva brings [phrase] to Godot"
+3. Verify carousel text is visible and animating (phrases should change every ~2.5 seconds)
+4. Verify mobile responsiveness: Resize browser to 320px width, confirm text scales appropriately
+5. Run landing page e2e tests: `cd apps/web && pnpm test:e2e tests/e2e/landing.spec.ts` - all tests must pass
+
 ## Failure Handling Protocol
 
 When a test fails:
