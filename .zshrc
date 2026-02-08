@@ -191,5 +191,5 @@ if [ -f '/opt/gcloudcli/google-cloud-sdk/path.zsh.inc' ]; then . '/opt/gcloudcli
 if [ -f '/opt/gcloudcli/google-cloud-sdk/completion.zsh.inc' ]; then . '/opt/gcloudcli/google-cloud-sdk/completion.zsh.inc'; fi
 
 reduceslop () {
-  cd ~/Projects/dotfiles && git pull && claude --dangerously-skip-permissions /reduce-slop
+  cd ~/Projects/ziva && git pull && claude --dangerously-skip-permissions /reduce-slop
 }
