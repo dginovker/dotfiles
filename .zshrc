@@ -189,3 +189,7 @@ if [ -f '/opt/gcloudcli/google-cloud-sdk/path.zsh.inc' ]; then . '/opt/gcloudcli
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/opt/gcloudcli/google-cloud-sdk/completion.zsh.inc' ]; then . '/opt/gcloudcli/google-cloud-sdk/completion.zsh.inc'; fi
+
+reduceslop () {
+  cd ~/Projects/dotfiles && git pull && claude --dangerously-skip-permissions /reduce-slop
+}
