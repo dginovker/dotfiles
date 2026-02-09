@@ -379,21 +379,18 @@ Verify Godot documentation files exist and the `get_class_docs` tool works corre
 6. PASS if: validate_tilemap_structure passes AND vision returns YES
 
 ### Category 17: Context Usage Widget
-1. Token tracking after message (API-verifiable): Send a message that triggers tool use, wait for response, call `/get-context-usage`, assert `breakdown.aiOutput > 0`, `breakdown.chatHistory > 0`, `breakdown.toolCalls > 0`, `toolCallDetails` has entries
+1. Token tracking after message (API-verifiable): Send a message that triggers tool use, wait for response, call `/get-context-usage`, assert `currentBreakdown.system > 0`, `currentBreakdown.tools > 0`, `currentBreakdown.messages > 0`
 2. Total cost non-zero (API-verifiable): Assert `totalCost > 0` and is a number
-3. Cache with Anthropic model (API-verifiable): Switch to Anthropic via `/set-model`, send two messages, call `/get-context-usage`, assert `cachedInputTokens > 0`, `estimatedSavings > 0`, `cacheDisplay` matches pattern with percentage
-4. Cache with non-cache model (API-verifiable): Switch to `xai/grok-4`, send a message, assert `cacheDisplay === "N/A"`
-5. Widget UI rendering (screenshot): Open dialog, verify "This conversation" section with "Total cost", "Cache", "Est. savings"; "What's using context" section with "Chat history" (collapsible), "AI output", "agents.md", "Open scripts", "Open scenes"; progress bar visible
-6. Breakdown reflects context files: Open a script in Godot, call `/get-context-usage`, verify `breakdown.openScripts > 0`
-7. Expandable sections: Click "Open scripts" row in the dialog, verify it expands to show individual script files sorted by token count (largest first)
-8. Settings link: Verify clicking the settings gear icon in the dialog footer opens Settings dialog at the Context tab
-9. Context settings tab: In Settings, verify the Context tab (Layers icon) shows auto-add toggles for scripts, scenes, and AGENTS.md
-10. Per-message cost badges (API-verifiable): After sending a message and receiving a response, call `/get-message-costs`, assert `count > 0` and at least one cost entry has value > 0
-11. Cost trigger in footer (screenshot): Verify the prompt footer shows a dotted-underline cost text (not a green circle SVG) that opens the context usage dialog when clicked
-12. Cumulative vs Current toggle (API-verifiable): Send message with 10+ tool calls, call `/get-context-usage`, assert `cumulativeInputTokens > inputTokens`, `currentToolCounts` exists, cumulative fields present. Open widget, verify toggle switches between "Current State" and "Cumulative Cost" with correct labels and values update when toggled
-13. Input to LLM breakdown (screenshot + API-verifiable): Send message with context files and tool calls, call `/get-context-usage`, open widget, expand "Input to LLM" row, verify it shows six sub-items: "Context files" (expandable - contains agents.md, scripts, scenes), "Tool outputs", "Messages", "System prompt", "Tool schemas", and "Other". Verify Other < 5K tokens and all six sub-items sum approximately to the total Input to LLM value shown. Verify "Output from LLM" is a separate top-level collapsible section
-14. Request composition accuracy (API-verifiable): Send a message, check browser console for `[Chat] Composition accuracy: X%` log. Assert accuracy is 85-115% (composition total within ±15% of API's actual inputTokens). Verify log shows both composition and api token counts. Assert `requestComposition` field exists in `/get-context-usage` response with 4 fields: `systemPromptTokens`, `toolSchemaTokens`, `contextFilesTokens`, `estimatedMessageTokens`
-15. Tool output counting accuracy (API-verifiable): Send a message that triggers 10+ tool calls (e.g., "Call get_scene_tree 12 times and tell me about the structure"), wait for response, call `/get-context-usage`, verify `breakdown.toolCalls > 0` reflects tool result tokens. Calculate "Other" in cumulative mode: `Other = breakdown.cumulativeInputTokens - (contextSumBase × apiCallCount) - breakdown.toolCalls - (messageTokens × (apiCallCount+1)/2) - (systemPromptTokens × apiCallCount) - (toolSchemaTokens × apiCallCount)` where `contextSumBase = breakdown.agentsMd + breakdown.openScripts + breakdown.openScenes`. Assert `other < 50000` to prevent regression of token tracking bug where tool outputs were double-counted
+3. Cache with Anthropic model (API-verifiable): Switch to Anthropic via `/set-model`, send two messages, call `/get-context-usage`, assert `cachedInputTokens > 0`, `estimatedSavings > 0`
+4. Widget UI rendering (screenshot): Open dialog, verify "This conversation" section with "Total cost", "Cache", "Est. savings"; "What's using context" section with "Input to LLM" (collapsible with "Context files", "Tool results", "Messages", "System prompt", "Tool schemas"), "Output from LLM"; progress bar visible. Verify NO "Other" line exists.
+5. Breakdown reflects context files: Open a script in Godot, call `/get-context-usage`, verify `breakdown.openScripts > 0`
+6. Expandable sections: Click "Open scripts" row in the dialog, verify it expands to show individual script files sorted by token count (largest first)
+7. Settings link: Verify clicking the settings gear icon in the dialog footer opens Settings dialog at the Context tab
+8. Context settings tab: In Settings, verify the Context tab (Layers icon) shows auto-add toggles for scripts, scenes, and AGENTS.md
+9. Per-message cost badges (API-verifiable): After sending a message and receiving a response, call `/get-message-costs`, assert `count > 0` and at least one cost entry has value > 0
+10. Cost trigger in footer (screenshot): Verify the prompt footer shows a dotted-underline cost text (not a green circle SVG) that opens the context usage dialog when clicked
+11. Cumulative vs Current toggle (API-verifiable): Send message with tool calls, call `/get-context-usage`, assert `cumulativeBreakdown.system > currentBreakdown.system`, `cumulativeBreakdown.tools > currentBreakdown.tools`. Open widget, verify toggle switches between "Current State" and "Cumulative Cost" with correct labels
+12. Proportional token breakdown accuracy (API-verifiable): Send a message with tool calls, call `/debug-token-breakdown`, verify `latest.breakdownSum` equals inputTokens exactly. Verify `cumulative.cumulativeBreakdownSum` equals `cumulative.actualCumulativeInputTokens` exactly. This tests the server-side proportional allocation — zero drift by construction, no "Other" category
 
 ### Category 18: Landing Page
 1. Navigate to http://localhost:3000 (the marketing landing page)
