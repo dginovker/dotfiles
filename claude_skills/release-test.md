@@ -391,6 +391,7 @@ Verify Godot documentation files exist and the `get_class_docs` tool works corre
 10. Per-message cost badges (API-verifiable): After sending a message and receiving a response, call `/get-message-costs`, assert `count > 0` and at least one cost entry has value > 0
 11. Cost trigger in footer (screenshot): Verify the prompt footer shows a dotted-underline cost text (not a green circle SVG) that opens the context usage dialog when clicked
 12. Cumulative vs Current toggle (API-verifiable): Send message with 10+ tool calls, call `/get-context-usage`, assert `cumulativeInputTokens > inputTokens`, `currentToolCounts` exists, cumulative fields present. Open widget, verify toggle switches between "Current State" and "Cumulative Cost" with correct labels and values update when toggled
+13. Input to LLM breakdown (screenshot + API-verifiable): Send message with context files and tool calls, call `/get-context-usage`, open widget, expand "Input to LLM" row, verify it shows three sub-items: "Context files" (sum of agents.md + scripts + scenes), "Tool outputs", and "Messages & system". Verify the three sub-items sum approximately to the total Input to LLM value shown
 
 ### Category 18: Landing Page
 1. Navigate to http://localhost:3000 (the marketing landing page)
