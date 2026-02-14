@@ -127,6 +127,12 @@ Test steps:
    - Verify `cssFontScale` matches `editorScale` (or both equal 1)
    - Verify `computedFontSize` is a valid CSS pixel value (e.g., "16px" or scaled)
    - Call `GET /state` and verify `editorScale` field is present
+8. **Privacy indicator icons in model selector**:
+   - Open model selector (via `/open-settings` or screenshot)
+   - Verify Claude Haiku 4.5 shows 🛡️ icon (zero data retention)
+   - Verify GPT-5 Nano shows 🔒 icon (temporary retention)
+   - Verify Grok 4 shows ❓ icon (unknown policy)
+   - Models with same quality rating should be sorted: ZDR > temp > unknown
 
 ### Category 6: Rate Limiting
 1. Rate limit status displays correctly
