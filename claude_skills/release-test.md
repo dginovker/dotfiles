@@ -261,15 +261,14 @@ cd apps/web && pnpm exec playwright test hosted-checkout.spec.ts --reporter=line
 ### Category 14: Prompt Caching
 Test prompt caching functionality for all providers.
 1. **Claude Opus 4.6** (Anthropic) - `anthropic/claude-opus-4.6` - Uses cache control headers - Expected: ~95%
-2. **GPT 5.2** (OpenAI) - `openai/gpt-5.2` - Expected: ~45%
+2. **GPT 5.2** (OpenAI) - `openai/gpt-5.2` - Uses promptCacheRetention - Expected: ~49%
 3. **Gemini 3 Flash** (Google) - `google/gemini-3-flash` - Uses implicit auto-caching - Expected: ~65%
 4. **GLM 5** (ZAI) - `zai/glm-5` - Uses automatic context caching - Expected: ~65%
 5. **Grok 4** (xAI) - `xai/grok-4` - Uses automatic prefix caching - Expected: ~99%
 6. **Kimi K2.5** (Moonshot) - `moonshotai/kimi-k2.5` - Uses automatic caching - Expected: ~99%
+7. **Minimax M2.5** (MiniMax) - `minimax/minimax-m2.5` - Uses cache control headers - Expected: ~49%
 
-**Implementation Note**: All providers use automatic caching. Providers with explicit cache headers (Anthropic, OpenAI) set `providerOptions` with cache configuration. Providers with implicit/automatic caching (Google, ZAI, xAI, Moonshot) must NOT have `providerOptions` set to allow default caching behavior.
-
-**Known Issue - GPT 5.2**: OpenAI's GPT-5.2 model has upstream caching issues as of Feb 2026. The `promptCacheRetention: '24h'` config only works for GPT-5.1. Community reports confirm GPT-5 caching is unreliable. This is an OpenAI API limitation, not a Ziva bug.
+**Implementation Note**: All providers use automatic caching. Providers with explicit cache headers (Anthropic, OpenAI, MiniMax) set `providerOptions` with cache configuration. Providers with implicit/automatic caching (Google, ZAI, xAI, Moonshot) must NOT have `providerOptions` set to allow default caching behavior.
 
 **Test Procedure** (for each model):
 1. Create a NEW chat via `/create-chat` to avoid any conversation history with images
@@ -296,35 +295,40 @@ Test prompt caching functionality for all providers.
     {
       "name": "Claude Opus 4.6 caching",
       "status": "passed",
-      "details": "Input: 14409 tokens, Cached: 13475 tokens, Hit rate: 48.33%"
+      "details": "Hit rate: 94.75%"
     },
     {
       "name": "GPT 5.2 caching",
       "status": "passed",
-      "details": "Input: 12850 tokens, Cached: 12150 tokens, Hit rate: 48.5%"
+      "details": "Hit rate: 48.7%"
     },
     {
       "name": "Gemini 3 Flash caching",
       "status": "passed",
-      "details": "Input: 8583 tokens, Cached: 5905 tokens, Hit rate: 40.76%"
+      "details": "Hit rate: 64.96%"
     },
     {
       "name": "GLM 5 caching",
       "status": "passed",
-      "details": "Input: 10200 tokens, Cached: 6800 tokens, Hit rate: 40.0%"
+      "details": "Hit rate: 64.96%"
     },
     {
       "name": "Grok 4 caching",
       "status": "passed",
-      "details": "Input: 9500 tokens, Cached: 6300 tokens, Hit rate: 39.87%"
+      "details": "Hit rate: 99.99%"
     },
     {
       "name": "Kimi K2.5 caching",
       "status": "passed",
-      "details": "Input: 10100 tokens, Cached: 6700 tokens, Hit rate: 39.88%"
+      "details": "Hit rate: 99.99%"
+    },
+    {
+      "name": "Minimax M2.5 caching",
+      "status": "passed",
+      "details": "Hit rate: 49.4%"
     }
   ],
-  "summary": {"total": 6, "passed": 6, "failed": 0}
+  "summary": {"total": 7, "passed": 7, "failed": 0}
 }
 ```
 
