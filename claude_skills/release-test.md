@@ -259,9 +259,9 @@ cd apps/web && pnpm exec playwright test hosted-checkout.spec.ts --reporter=line
 - Dollar formatting: Spot-check admin pages (daily-usage, top-users, request-logs) and verify all dollar amounts display as `$X.XX` with exactly 2 decimal places (not 4 or 6)
 
 ### Category 14: Prompt Caching
-Test prompt caching functionality for all providers with automatic caching support (via Vercel AI Gateway):
+Test prompt caching functionality for all providers.
 1. **Claude Opus 4.6** (Anthropic) - `anthropic/claude-opus-4.6` - Uses cache control headers - Expected: ~95%
-2. **GPT 5.2** (OpenAI) - `openai/gpt-5.2` - ⚠️ Known upstream API issue - Expected: 0% (skip or mark as known limitation)
+2. **GPT 5.2** (OpenAI) - `openai/gpt-5.2` - Expected: ~45%
 3. **Gemini 3 Flash** (Google) - `google/gemini-3-flash` - Uses implicit auto-caching - Expected: ~65%
 4. **GLM 5** (ZAI) - `zai/glm-5` - Uses automatic context caching - Expected: ~65%
 5. **Grok 4** (xAI) - `xai/grok-4` - Uses automatic prefix caching - Expected: ~99%
